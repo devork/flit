@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# -----------------------------------------------------------------------------
+# Provides the kick off for the flit tooling to generate stubs
+#
+# Ensure this script is in the path when using protoc. It will be used when
+# protoc is called with the following flag:
+#
+#       --flit_out=.
+#
+# If you want to remote debug, add the following env variable:
+#
+#   FLIT_JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005,quiet=y"
+#
+# The quiet flag is required otherwise the tooling will dump output to stdout which will break the
+# plugin output and generation will fail.
+# -----------------------------------------------------------------------------
+
+JAR=$(ls -c ./protoc-plugin-*-all.jar | head -1)
+java ${FLIT_JAVA_OPTS} -jar $JAR $@

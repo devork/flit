@@ -1,0 +1,37 @@
+syntax = "proto3";
+package com.example.helloworld;
+option java_package = "com.example.helloworld";
+
+service HelloWorld {
+    rpc Hello (HelloReq) returns (HelloResp);
+    rpc HelloAgain (HelloReq) returns (HelloResp);
+}
+
+message HelloReq {
+    string subject = 1;
+}
+
+message HelloResp {
+    string text = 1;
+}
+
+service Status {
+    rpc Status (Empty) returns (StatusResp);
+}
+
+message Empty {
+}
+message StatusResp {
+}
+
+
+service Update {
+    rpc Update (UpdateReq) returns (UpdateResp);
+}
+
+message UpdateReq {
+}
+message UpdateResp {
+}
+
+

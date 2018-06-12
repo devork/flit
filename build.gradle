@@ -1,0 +1,38 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath('org.eclipse.jgit:org.eclipse.jgit:4.6.0.201612231935-r')
+    }
+}
+
+import org.eclipse.jgit.lib.Repository
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+
+static def scmInfo(String path) {
+    FileRepositoryBuilder builder = new FileRepositoryBuilder()
+    Repository repository = builder.setGitDir(new File("${path}/.git"))
+            .readEnvironment()
+            .findGitDir()
+            .build()
+
+    def branch = repository.getBranch()
+    def head = repository.resolve("HEAD")
+    def revision = head == null ? "UNKNOWN" : head.name()
+    def date = Instant.now().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+    def tstamp = Instant.now().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"))
+
+    return [
+            branch  : branch,
+            revision: revision,
+            date    : date,
+            tstamp  : tstamp
+    ]
+}
+
+project.ext.scm = scmInfo(rootDir.getAbsolutePath())
