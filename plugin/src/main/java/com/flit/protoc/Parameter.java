@@ -13,6 +13,11 @@ import java.util.stream.Collectors;
 @ToString
 public class Parameter {
 
+    public static final String PARAM_TARGET = "target";
+    public static final String PARAM_CLIENT = "client";
+    public static final String PARAM_TYPE = "type";
+    public static final String PARAM_CONTEXT = "context";
+
     private String key;
     private String value;
 

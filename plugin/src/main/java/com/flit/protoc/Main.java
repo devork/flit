@@ -7,11 +7,10 @@ import com.flit.protoc.gen.GeneratorException;
 
 import java.util.Map;
 
-public class Main {
+import static com.flit.protoc.Parameter.PARAM_TARGET;
+import static com.flit.protoc.Parameter.PARAM_TYPE;
 
-    private static final String PARAM_TARGET = "target";
-    private static final String PARAM_CLIENT = "client";
-    private static final String PARAM_TYPE = "type";
+public class Main {
 
     public static void main(String[] args) throws Exception {
 
@@ -27,11 +26,12 @@ public class Main {
             return;
         }
 
+        Map<String, Parameter> params = Parameter.of(request.getParameter());
 
         try {
             PluginProtos.CodeGeneratorResponse.Builder builder = PluginProtos.CodeGeneratorResponse.newBuilder();
 
-            resolveGenerator(request).generate(request).forEach(builder::addFile);
+            resolveGenerator(params).generate(request, params).forEach(builder::addFile);
 
             builder.build().writeTo(System.out);
         } catch (GeneratorException e) {
@@ -43,8 +43,7 @@ public class Main {
         }
     }
 
-    private static Generator resolveGenerator(PluginProtos.CodeGeneratorRequest request) {
-        Map<String, Parameter> params = Parameter.of(request.getParameter());
+    private static Generator resolveGenerator(Map<String, Parameter> params) {
 
         if (!params.containsKey(PARAM_TARGET)) {
             throw new GeneratorException("No argument specified for target");
