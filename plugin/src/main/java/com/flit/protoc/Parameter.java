@@ -33,6 +33,7 @@ public class Parameter {
 
         return Arrays.stream(value.split(","))
             .map(p -> p.split("=", 2))
+            .filter(s -> s.length == 2 && !s[0].trim().isEmpty() && !s[1].trim().isEmpty())
             .map(Parameter::new)
             .collect(Collectors.toMap(Parameter::getKey, Function.identity()));
     }

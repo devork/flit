@@ -1,4 +1,4 @@
-package com.flit;
+package com.flit.runtime;
 
 /**
  * Provides the mapping of error code (string status) to the corresponding HTTP status code.
@@ -112,5 +112,13 @@ public enum ErrorCode {
     ErrorCode(String errorCode, int httpStatus) {
         this.errorCode = errorCode;
         this.httpStatus = httpStatus;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public int getHttpStatus() {
+        return httpStatus;
     }
 }

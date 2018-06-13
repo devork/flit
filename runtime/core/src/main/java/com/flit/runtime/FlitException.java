@@ -1,7 +1,8 @@
-package com.flit;
+package com.flit.runtime;
 
 import lombok.Getter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,6 +20,10 @@ public class FlitException extends RuntimeException {
         this.meta = meta;
     }
 
+    public boolean hasMeta() {
+        return meta != null && !meta.isEmpty();
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -26,7 +31,7 @@ public class FlitException extends RuntimeException {
     public static class Builder {
         private String message;
         private ErrorCode errorCode;
-        private Map<String, Object> meta;
+        private Map<String, Object> meta = new HashMap<>();
         private Throwable cause;
 
         public Builder withMessage(String message) {
@@ -41,6 +46,11 @@ public class FlitException extends RuntimeException {
 
         public Builder withMeta(Map<String, Object> meta) {
             this.meta = meta;
+            return this;
+        }
+
+        public Builder withMeta(String key, Object value) {
+            this.meta.put(key, value);
             return this;
         }
 

@@ -15,6 +15,7 @@
 # The quiet flag is required otherwise the tooling will dump output to stdout which will break the
 # plugin output and generation will fail.
 # -----------------------------------------------------------------------------
+DIR=$(dirname $(readlink -f "$0"))
 
-JAR=$(ls -c ./protoc-plugin-*-all.jar | head -1)
+JAR=$(ls -c ${DIR}/plugin-*-all.jar | head -1)
 java ${FLIT_JAVA_OPTS} -jar $JAR $@

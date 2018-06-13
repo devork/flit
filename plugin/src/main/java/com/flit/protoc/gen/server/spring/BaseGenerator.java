@@ -17,18 +17,46 @@ abstract class BaseGenerator {
     DescriptorProtos.FileDescriptorProto proto;
 
     BaseGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto s) {
-        String baseClassName = proto.getOptions().getJavaOuterClassname();
+        this.clazz = proto.getOptions().getJavaOuterClassname();
 
-        if (baseClassName == null || baseClassName.isEmpty()) {
-            baseClassName = proto.getName().substring(0, proto.getName().lastIndexOf('.'));
+        if (this.clazz == null || this.clazz.isEmpty()) {
+
+            char[] classname = proto.getName().substring(0, proto.getName().lastIndexOf('.')).toCharArray();
+            StringBuilder sb = new StringBuilder();
+
+            char previous = '_';
+            for (char c : classname) {
+                if (c == '_') {
+                    previous = c;
+                    continue;
+                }
+
+                if (previous == '_') {
+                    sb.append(Character.toUpperCase(c));
+                } else {
+                    sb.append(c);
+                }
+
+                previous = c;
+            }
+
+            this.clazz = sb.toString();
+
+            // check to see if there are any messages with this same class name as per java proto specs
+            // note that we also check the services too as the protoc compiler does that as well
+            proto.getMessageTypeList().forEach(m -> {
+                if (m.getName().equals(this.clazz)) {
+                    this.clazz += "OuterClass";
+                }
+            });
+
+            proto.getServiceList().forEach(m -> {
+                if (m.getName().equals(this.clazz)) {
+                    this.clazz += "OuterClass";
+                }
+            });
         }
 
-        char[] className = baseClassName.toCharArray();
-        if (!Character.isUpperCase(className[0])) {
-            className[0] = Character.toUpperCase(className[0]);
-        }
-
-        this.clazz = new String(className);
         this.javaPackage = proto.getOptions().getJavaPackage();
         this.proto = proto;
         this.service = s;
