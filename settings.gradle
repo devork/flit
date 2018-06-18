@@ -1,4 +1,5 @@
 include "plugin"
-include 'runtime:spring'
 include 'runtime:core'
+include 'runtime:spring'
+include 'runtime:undertow'
 

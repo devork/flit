@@ -1,4 +1,4 @@
-package com.flit.protoc.gen.server.spring;
+package com.flit.protoc.gen.server;
 
 import com.flit.protoc.gen.Buffer;
 import com.google.protobuf.DescriptorProtos;
@@ -7,16 +7,16 @@ import com.google.protobuf.compiler.PluginProtos;
 import java.time.Instant;
 import java.util.List;
 
-abstract class BaseGenerator {
-    Buffer b = new Buffer();
+public abstract class BaseGenerator {
+    protected Buffer b = new Buffer();
 
-    DescriptorProtos.ServiceDescriptorProto service;
-    String javaPackage;
-    String clazz;
+    protected DescriptorProtos.ServiceDescriptorProto service;
+    protected String javaPackage;
+    protected String clazz;
 
-    DescriptorProtos.FileDescriptorProto proto;
+    protected DescriptorProtos.FileDescriptorProto proto;
 
-    BaseGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto s) {
+    protected BaseGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto s) {
         this.clazz = proto.getOptions().getJavaOuterClassname();
 
         if (this.clazz == null || this.clazz.isEmpty()) {
@@ -62,7 +62,7 @@ abstract class BaseGenerator {
         this.service = s;
     }
 
-    void writeProlog() {
+    public void writeProlog() {
         b.wn("// -------------------------------------------------------------");
         b.wn("// Generated code from flit: Please do not modify");
         b.wn("// Created: ", Instant.now().toString());
@@ -70,18 +70,18 @@ abstract class BaseGenerator {
         b.wn("\n");
     }
 
-    void writePackage() {
+    public void writePackage() {
         b.wn("package ", javaPackage, ";");
         b.n();
     }
 
-    abstract List<PluginProtos.CodeGeneratorResponse.File> getFiles();
+    public abstract List<PluginProtos.CodeGeneratorResponse.File> getFiles();
 
-    static String basename(String name) {
+    public static String basename(String name) {
         return basename(name, "\\.");
     }
 
-    static String basename(String name, String sep) {
+    public static String basename(String name, String sep) {
         String[] parts = name.split(sep);
 
         return parts[parts.length - 1];

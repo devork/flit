@@ -17,7 +17,7 @@ public class PluginTest {
         assertTrue("Expected an error for no parameters", response.hasError());
         assertEquals(
             "Incorrect error message",
-            "Usage: --flit_out=target=server,type=[spring]:<PATH>",
+            "Usage: --flit_out=target=server,type=[spring|undertow]:<PATH>",
             response.getError()
         );
     }

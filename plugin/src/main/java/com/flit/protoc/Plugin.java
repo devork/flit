@@ -3,6 +3,7 @@ package com.flit.protoc;
 import com.flit.protoc.gen.Generator;
 import com.flit.protoc.gen.GeneratorException;
 import com.flit.protoc.gen.server.spring.SpringGenerator;
+import com.flit.protoc.gen.server.undertow.UndertowGenerator;
 import com.google.protobuf.compiler.PluginProtos;
 
 import java.util.Map;
@@ -22,7 +23,7 @@ public class Plugin {
         if (!request.hasParameter()) {
             return PluginProtos.CodeGeneratorResponse
                 .newBuilder()
-                .setError("Usage: --flit_out=target=server,type=[spring]:<PATH>")
+                .setError("Usage: --flit_out=target=server,type=[spring|undertow]:<PATH>")
                 .build();
         }
 
@@ -58,6 +59,8 @@ public class Plugin {
                     case "boot":
                     case "spring":
                         return new SpringGenerator();
+                    case "undertow":
+                        return new UndertowGenerator();
                     default:
                         throw new GeneratorException("Unknown server type: " + params.get(PARAM_TYPE).getValue());
                 }

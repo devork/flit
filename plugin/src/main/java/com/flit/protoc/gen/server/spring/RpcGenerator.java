@@ -1,5 +1,6 @@
 package com.flit.protoc.gen.server.spring;
 
+import com.flit.protoc.gen.server.BaseGenerator;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 
@@ -126,7 +127,7 @@ class RpcGenerator extends BaseGenerator {
     }
 
     @Override
-    List<PluginProtos.CodeGeneratorResponse.File> getFiles() {
+    public List<PluginProtos.CodeGeneratorResponse.File> getFiles() {
         PluginProtos.CodeGeneratorResponse.File.Builder builder = PluginProtos.CodeGeneratorResponse.File.newBuilder();
         builder.setName(filename);
         builder.setContent(b.toString());
