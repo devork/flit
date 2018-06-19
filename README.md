@@ -67,4 +67,4 @@ The flit plugin accepts the following plugin parameters:
 | Name          | Required  | Type                          | Description                                               |
 |:--------------|:---------:|:------------------------------|:----------------------------------------------------------|
 | `target`      | Y         | `enum[server]`                | The type of target to generate e.g. server, client etc    |
-| `type`        | Y         | `enum[spring|undertow|boot]`  | Type of target to generate                                |
+| `type`        | Y         | `enum[spring,undertow,boot]`  | Type of target to generate                                |
