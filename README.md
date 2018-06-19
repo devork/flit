@@ -68,7 +68,7 @@ The flit plugin accepts the following plugin parameters:
 |:--------------|:---------:|:------------------------------|:----------------------------------------------------------|
 | `target`      | Y         | `enum[server]`                | The type of target to generate e.g. server, client etc    |
 | `type`        | Y         | `enum[spring,undertow,boot]`  | Type of target to generate                                |
-
+| `context`     | N         | `string`                      | Base context for routing, default is `/twirp`             |
 
 # Development
 
@@ -85,3 +85,28 @@ Remote debugging can be performed as follows:
 
 When running with the above options, the generator will enable a remote java debug session on port 5005. This is useful
 for debugging a full generation step.
+
+## Test Fixture Generation
+
+The test resources contains a fake plugin that simply dumps the binary request to a file called `file.bin`. This utility
+can be used to generate test fixtures which can be fed to tests to drive plugin generation, for example:
+
+    $ protoc \
+        --plugin=${PWD}/protoc-gen-dump \
+        --dump_out=target=server,type=undertow:../java  \
+        ./helloworld.proto
+    $ mv file.bin helloworld.bin
+
+This can be run from the resources directory to generate a `CodeGeneratorRequest` protobuf file, which can then be read
+by tests:
+
+    PluginProtos.CodeGeneratorRequest request = null;
+    try (InputStream is = this.getClass().getClassLoader().getResource("helloworld.bin").openStream()) {
+        request = PluginProtos.CodeGeneratorRequest
+            .newBuilder()
+            .mergeFrom(is)
+            .build();
+    }
+
+    Plugin plugin = new Plugin(request);
+    plugin.process();

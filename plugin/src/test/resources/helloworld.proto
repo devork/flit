@@ -14,24 +14,3 @@ message HelloReq {
 message HelloResp {
     string text = 1;
 }
-
-service Status {
-    rpc Status (Empty) returns (StatusResp);
-}
-
-message Empty {
-}
-message StatusResp {
-}
-
-
-service Update {
-    rpc Update (UpdateReq) returns (UpdateResp);
-}
-
-message UpdateReq {
-}
-message UpdateResp {
-}
-
-
