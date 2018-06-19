@@ -16,7 +16,9 @@ group 'com.flit'
 
 sourceCompatibility = 1.8
 
-version = "${project.version}+${project.scm.tstamp}"
+if (!(project.hasProperty("release") && project.properties['release'] == "true")) {
+    project.version += ".snapshot." + project.scm.tstamp
+}
 
 shadowJar {
     manifest {
@@ -33,7 +35,6 @@ repositories {
 dependencies {
     compile 'com.google.guava:guava:25.1-jre'
     compile 'org.slf4j:slf4j-api:1.7.25'
-    compile 'org.codehaus.janino:janino:3.0.6'
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'commons-io:commons-io:2.5'
     compile 'com.google.protobuf:protobuf-java:3.5.1'
@@ -47,3 +48,18 @@ dependencies {
 
 shadowJar.dependsOn build
 
+task pack(type: Zip) {
+
+    archiveName = "flit-plugin.zip"
+    destinationDir = file("${buildDir}/package")
+
+    from("${buildDir}/libs") {
+        include "plugin-*-all.jar"
+    }
+
+    from("${projectDir}/src/main/shell") {
+        include("*")
+    }
+}
+
+pack.dependsOn shadowJar
