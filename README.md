@@ -68,3 +68,20 @@ The flit plugin accepts the following plugin parameters:
 |:--------------|:---------:|:------------------------------|:----------------------------------------------------------|
 | `target`      | Y         | `enum[server]`                | The type of target to generate e.g. server, client etc    |
 | `type`        | Y         | `enum[spring,undertow,boot]`  | Type of target to generate                                |
+
+
+# Development
+
+All development is done in Java using JDK 8 (as mentioned above).
+
+Remote debugging can be performed as follows:
+
+    export FLIT_JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005,quiet=y"
+    protoc \
+            --proto_path=. \
+            --java_out=../java \
+            --flit_out=target=server,type=undertow:../java \
+            ./haberdasher.proto
+
+When running with the above options, the generator will enable a remote java debug session on port 5005. This is useful
+for debugging a full generation step.
