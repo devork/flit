@@ -5,8 +5,8 @@ framework.
 
 It supports the generation of Java based servers with the following flavours supported:
 
-    + [Spring Boot/Spring MVC](https://spring.io/projects/spring-boot "Spring Boot")
-    + [Undertow](http://undertow.io/ "Undertow")
++ [Spring Boot/Spring MVC](https://spring.io/projects/spring-boot "Spring Boot")
++ [Undertow](http://undertow.io/ "Undertow")
 
 ## Building & Running
 
@@ -54,7 +54,11 @@ After building:
 
 The plugin is executed as part of a protoc compilation step:
 
-    protoc --proto_path=. --java_out=../java --flit_out=target=server,type=undertow:../java ./haberdasher.proto
+    protoc \
+        --proto_path=. \
+        --java_out=../java \
+        --flit_out=target=server,type=undertow:../java \
+        ./haberdasher.proto
 
 ### Options
 
