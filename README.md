@@ -110,3 +110,9 @@ by tests:
 
     Plugin plugin = new Plugin(request);
     plugin.process();
+    
+# Guides
+
+| Platform  | Document                              |
+|:----------|:--------------------------------------|
+| Undertow  | (undertow.md)[docs/undertow.md]       |

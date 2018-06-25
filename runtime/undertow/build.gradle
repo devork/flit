@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.flit'
-
+archivesBaseName = 'flit-undertow-runtime'
 sourceCompatibility = 1.8
 
 repositories {
