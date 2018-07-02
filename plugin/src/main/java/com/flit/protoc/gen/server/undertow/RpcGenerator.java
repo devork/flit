@@ -21,9 +21,9 @@ class RpcGenerator extends BaseGenerator {
             this.context = "/twirp";
         } else {
             context = context.trim();
-            if (context.equals("")) {
+            if (context.equals("") || context.equals("/")) {
                 // empty route - i.e. top level "/"
-                this.context = context;
+                this.context = "";
             } else if (context.startsWith("/")) {
                 this.context = context;
             } else {
