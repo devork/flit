@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package com.example.helloworld;
+option java_package = "com.example.helloworld";
+
+
+import "core.proto";
+
+// -----------------------------------------------------------------------------------
+// Status type
+// -----------------------------------------------------------------------------------
+message StatusResponse {
+
+    enum StatusType {
+        UNKNOWN = 0;
+        RUNNING = 1;
+        ERROR = 2;
+    }
+
+    StatusType status = 1;
+    string sha = 2;
+    string date = 3;
+    string version = 4;
+}
+
+// Status service will provide specifics on the current state of the server
+service Status {
+    rpc GetStatus(Empty) returns (StatusResponse);
+}

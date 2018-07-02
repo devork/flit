@@ -1,6 +1,7 @@
 package com.flit.protoc.gen.server.spring;
 
 import com.flit.protoc.gen.server.BaseGenerator;
+import com.flit.protoc.gen.server.TypeMapper;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 
@@ -12,8 +13,8 @@ class RpcGenerator extends BaseGenerator {
     private final String filename;
     private final String context;
 
-    RpcGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto service, String context) {
-        super(proto, service);
+    RpcGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto service, String context, TypeMapper mapper) {
+        super(proto, service, mapper);
         this.filename = javaPackage.replace(".", "/") + "/Rpc" + this.service.getName() + "Controller.java";
 
         if (context == null) {

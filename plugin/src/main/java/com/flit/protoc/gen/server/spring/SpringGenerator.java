@@ -3,6 +3,7 @@ package com.flit.protoc.gen.server.spring;
 import com.flit.protoc.Parameter;
 import com.flit.protoc.gen.Generator;
 import com.flit.protoc.gen.server.ServiceGenerator;
+import com.flit.protoc.gen.server.TypeMapper;
 import com.google.protobuf.compiler.PluginProtos;
 
 import java.util.ArrayList;
@@ -21,10 +22,14 @@ public class SpringGenerator implements Generator {
 
         List<PluginProtos.CodeGeneratorResponse.File> files = new ArrayList<>();
 
+        TypeMapper mapper = new TypeMapper();
+
         request.getProtoFileList().forEach(proto -> {
 
             // Provide handlers for each service entry
             proto.getServiceList().forEach(s -> {
+
+                mapper.add(proto);
 
                 String context = null;
 
@@ -32,8 +37,8 @@ public class SpringGenerator implements Generator {
                     context = params.get(PARAM_CONTEXT).getValue();
                 }
 
-                ServiceGenerator sgen = new ServiceGenerator(proto, s);
-                RpcGenerator rgen = new RpcGenerator(proto, s, context);
+                ServiceGenerator sgen = new ServiceGenerator(proto, s, mapper);
+                RpcGenerator rgen = new RpcGenerator(proto, s, context, mapper);
 
                 rgen.writeProlog();
                 rgen.writePackage();

@@ -1,6 +1,7 @@
 package com.flit.protoc.gen.server.undertow;
 
 import com.flit.protoc.gen.server.BaseGenerator;
+import com.flit.protoc.gen.server.TypeMapper;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 
@@ -12,8 +13,8 @@ class RpcGenerator extends BaseGenerator {
     private final String filename;
     private final String context;
 
-    RpcGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto service, String context) {
-        super(proto, service);
+    RpcGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto service, String context, TypeMapper mapper) {
+        super(proto, service, mapper);
         this.filename = javaPackage.replace(".", "/") + "/Rpc" + this.service.getName() + "Handler.java";
 
         if (context == null) {
@@ -139,15 +140,15 @@ class RpcGenerator extends BaseGenerator {
 
             // bind the data
             b.iwn("boolean json = false;");
-            b.iwn(clazz, ".", basename(m.getInputType()), " data;");
+            b.iwn(mapper.get(m.getInputType()), " data;");
             b.iwn("if (exchange.getRequestHeaders().get(Headers.CONTENT_TYPE).getFirst().equals(\"application/protobuf\")) {");
             b.inc();
-            b.iwn("data = ", clazz, ".", basename(m.getInputType()), ".parseFrom(exchange.getInputStream());");
+            b.iwn("data = ", mapper.get(m.getInputType()), ".parseFrom(exchange.getInputStream());");
             b.dec();
             b.iwn("} else if (exchange.getRequestHeaders().get(Headers.CONTENT_TYPE).getFirst().startsWith(\"application/json\")) {");
             b.inc();
             b.iwn("json = true;");
-            b.iwn(clazz, ".", basename(m.getInputType()), ".Builder builder = ", clazz, ".", basename(m.getInputType()), ".newBuilder();");
+            b.iwn(mapper.get(m.getInputType()), ".Builder builder = ", mapper.get(m.getInputType()), ".newBuilder();");
             b.iwn("JsonFormat.parser().merge(new InputStreamReader(exchange.getInputStream(), Charset.forName(\"UTF-8\")), builder);");
             b.iwn("data = builder.build();");
             b.dec();
@@ -160,7 +161,7 @@ class RpcGenerator extends BaseGenerator {
             b.n();
 
             // route to the service
-            b.iwn(clazz, ".", basename(m.getOutputType()), " retval = ", "service.handle", m.getName(), "(data);");
+            b.iwn(mapper.get(m.getOutputType()), " retval = ", "service.handle", m.getName(), "(data);");
             b.iwn("exchange.setStatusCode(200);");
 
             b.iwn("if (json) {");

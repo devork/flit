@@ -7,59 +7,24 @@ import com.google.protobuf.compiler.PluginProtos;
 import java.time.Instant;
 import java.util.List;
 
-public abstract class BaseGenerator {
-    protected Buffer b = new Buffer();
+import static com.flit.protoc.gen.server.TypeMapper.getClassname;
 
-    protected DescriptorProtos.ServiceDescriptorProto service;
-    protected String javaPackage;
-    protected String clazz;
+public abstract class BaseGenerator {
+
+    protected final Buffer b = new Buffer();
+    protected final DescriptorProtos.ServiceDescriptorProto service;
+    protected final String javaPackage;
+    protected final String clazz;
+    protected final TypeMapper mapper;
 
     protected DescriptorProtos.FileDescriptorProto proto;
 
-    protected BaseGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto s) {
-        this.clazz = proto.getOptions().getJavaOuterClassname();
-
-        if (this.clazz == null || this.clazz.isEmpty()) {
-
-            char[] classname = proto.getName().substring(0, proto.getName().lastIndexOf('.')).toCharArray();
-            StringBuilder sb = new StringBuilder();
-
-            char previous = '_';
-            for (char c : classname) {
-                if (c == '_') {
-                    previous = c;
-                    continue;
-                }
-
-                if (previous == '_') {
-                    sb.append(Character.toUpperCase(c));
-                } else {
-                    sb.append(c);
-                }
-
-                previous = c;
-            }
-
-            this.clazz = sb.toString();
-
-            // check to see if there are any messages with this same class name as per java proto specs
-            // note that we also check the services too as the protoc compiler does that as well
-            proto.getMessageTypeList().forEach(m -> {
-                if (m.getName().equals(this.clazz)) {
-                    this.clazz += "OuterClass";
-                }
-            });
-
-            proto.getServiceList().forEach(m -> {
-                if (m.getName().equals(this.clazz)) {
-                    this.clazz += "OuterClass";
-                }
-            });
-        }
-
+    protected BaseGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto s, TypeMapper mapper) {
+        this.clazz = getClassname(proto);
         this.javaPackage = proto.getOptions().getJavaPackage();
         this.proto = proto;
         this.service = s;
+        this.mapper = mapper;
     }
 
     public void writeProlog() {

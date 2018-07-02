@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package com.example.helloworld;
+option java_package = "com.example.helloworld";
+
+
+// Empty is used to signify a void type
+message Empty {}

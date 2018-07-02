@@ -16,11 +16,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class UndertowGeneratorTest extends BaseGeneratorTest {
+/**
+ * Tests the generation of a service that has core definition imported from another file
+ */
+public class StatusGeneratorTest extends BaseGeneratorTest {
 
     @Test
     public void test_Generate() throws Exception {
-        PluginProtos.CodeGeneratorRequest request = load("helloworld.undertow.bin");
+        PluginProtos.CodeGeneratorRequest request = load("status.undertow.bin");
 
         Plugin plugin = new Plugin(request);
         PluginProtos.CodeGeneratorResponse response = plugin.process();
@@ -33,12 +36,11 @@ public class UndertowGeneratorTest extends BaseGeneratorTest {
             Function.identity()
         ));
 
-        assertTrue(files.containsKey("com/example/helloworld/RpcHelloWorldService.java"));
-        assertTrue(files.containsKey("com/example/helloworld/RpcHelloWorldHandler.java"));
+        assertTrue(files.containsKey("com/example/helloworld/RpcStatusService.java"));
+        assertTrue(files.containsKey("com/example/helloworld/RpcStatusHandler.java"));
 
-        // ensure it's parseable java
-        test_Service(files.get("com/example/helloworld/RpcHelloWorldService.java"));
-        test_Handler(files.get("com/example/helloworld/RpcHelloWorldHandler.java"));
+        test_Service(files.get("com/example/helloworld/RpcStatusService.java"));
+        test_Handler(files.get("com/example/helloworld/RpcStatusHandler.java"));
     }
 
     private void test_Handler(PluginProtos.CodeGeneratorResponse.File file) throws Exception {
@@ -48,7 +50,7 @@ public class UndertowGeneratorTest extends BaseGeneratorTest {
         assertEquals(1, cu.getTypes().size());
 
         assertTrue(cu.getType(0).isPublic());
-        assertEquals("RpcHelloWorldHandler", cu.getType(0).getNameAsString());
+        assertEquals("RpcStatusHandler", cu.getType(0).getNameAsString());
         assertEquals("HttpHandler", ((ClassOrInterfaceDeclaration)cu.getType(0)).getImplementedTypes(0).getNameAsString());
 
         Map<String, MethodDeclaration> methods = cu
@@ -56,10 +58,9 @@ public class UndertowGeneratorTest extends BaseGeneratorTest {
             .stream()
             .collect(Collectors.toMap(MethodDeclaration::getNameAsString, Function.identity()));
 
-        assertEquals(3, methods.size());
+        assertEquals(2, methods.size());
         assertTrue(methods.containsKey("handleRequest"));
-        assertTrue(methods.containsKey("handleHello"));
-        assertTrue(methods.containsKey("handleHelloAgain"));
+        assertTrue(methods.containsKey("handleGetStatus"));
 
         MethodDeclaration handleRequest = methods.get("handleRequest");
         assertEquals(1, handleRequest.getParameters().size());
@@ -68,20 +69,12 @@ public class UndertowGeneratorTest extends BaseGeneratorTest {
         assertEquals("void", handleRequest.getTypeAsString());
         assertEquals("Exception", handleRequest.getThrownException(0).asString());
 
-        MethodDeclaration handleHello = methods.get("handleHello");
+        MethodDeclaration handleHello = methods.get("handleGetStatus");
         assertEquals(1, handleHello.getParameters().size());
 
         assertEquals("HttpServerExchange", handleHello.getParameterByName("exchange").get().getTypeAsString());
         assertEquals("void", handleHello.getTypeAsString());
         assertEquals("Exception", handleHello.getThrownException(0).asString());
-
-
-        MethodDeclaration handleHelloAgain = methods.get("handleHelloAgain");
-        assertEquals(1, handleHelloAgain.getParameters().size());
-
-        assertEquals("HttpServerExchange", handleHelloAgain.getParameterByName("exchange").get().getTypeAsString());
-        assertEquals("void", handleHelloAgain.getTypeAsString());
-        assertEquals("Exception", handleHelloAgain.getThrownException(0).asString());
 
     }
 
@@ -92,28 +85,22 @@ public class UndertowGeneratorTest extends BaseGeneratorTest {
         assertEquals(1, cu.getTypes().size());
 
         assertTrue(cu.getType(0).isPublic());
-        assertEquals("RpcHelloWorldService", cu.getType(0).getNameAsString());
+        assertEquals("RpcStatusService", cu.getType(0).getNameAsString());
 
         Map<String, MethodDeclaration> methods = cu
             .findAll(MethodDeclaration.class)
             .stream()
             .collect(Collectors.toMap(MethodDeclaration::getNameAsString, Function.identity()));
 
-        assertEquals(2, methods.size());
-        assertTrue(methods.containsKey("handleHello"));
-        assertTrue(methods.containsKey("handleHelloAgain"));
+        assertEquals(1, methods.size());
+        assertTrue(methods.containsKey("handleGetStatus"));
 
-        MethodDeclaration handleHello = methods.get("handleHello");
+        MethodDeclaration handleHello = methods.get("handleGetStatus");
         assertEquals(1, handleHello.getParameters().size());
 
-        assertEquals("Helloworld.HelloReq", handleHello.getParameterByName("in").get().getTypeAsString());
-        assertEquals("Helloworld.HelloResp", handleHello.getTypeAsString());
-
-        MethodDeclaration handleHelloAgain = methods.get("handleHelloAgain");
-        assertEquals(1, handleHelloAgain.getParameters().size());
-
-        assertEquals("Helloworld.HelloReq", handleHelloAgain.getParameterByName("in").get().getTypeAsString());
-        assertEquals("Helloworld.HelloResp", handleHelloAgain.getTypeAsString());
+        assertEquals("Core.Empty", handleHello.getParameterByName("in").get().getTypeAsString());
+        assertEquals("StatusOuterClass.StatusResponse", handleHello.getTypeAsString());
     }
+
 
 }
