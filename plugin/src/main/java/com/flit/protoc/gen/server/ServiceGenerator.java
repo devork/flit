@@ -12,11 +12,11 @@ public class ServiceGenerator extends BaseGenerator {
 
     public ServiceGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto s, TypeMapper mapper) {
         super(proto, s, mapper);
-        this.filename = javaPackage.replace(".", "/") + "/Rpc" + service.getName() + "Service.java";
+        this.filename = javaPackage.replace(".", "/") + "/Rpc" + service.getName() + ".java";
     }
 
     public void open() {
-        b.wn("public interface Rpc", service.getName(), "Service {");
+        b.wn("public interface Rpc", service.getName(), " {");
         b.n();
         b.inc();
     }

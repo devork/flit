@@ -55,7 +55,7 @@ class RpcGenerator extends BaseGenerator {
         // add the service handler
         b.inc();
         b.iwn("@Autowired");
-        b.iwn("private Rpc", service.getName(), "Service service;");
+        b.iwn("private Rpc", service.getName(), " service;");
         b.n();
     }
 

@@ -56,7 +56,7 @@ public class ContextGeneratorTest extends BaseGeneratorTest {
             Function.identity()
         ));
 
-        assertTrue(files.containsKey("com/example/context/rpc/RpcNullServiceService.java"));
+        assertTrue(files.containsKey("com/example/context/rpc/RpcNullService.java"));
         assertTrue(files.containsKey("com/example/context/rpc/RpcNullServiceHandler.java"));
 
         assertTrue(files.get("com/example/context/rpc/RpcNullServiceHandler.java").getContent().contains(

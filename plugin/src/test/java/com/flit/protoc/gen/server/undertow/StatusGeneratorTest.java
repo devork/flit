@@ -36,10 +36,10 @@ public class StatusGeneratorTest extends BaseGeneratorTest {
             Function.identity()
         ));
 
-        assertTrue(files.containsKey("com/example/helloworld/RpcStatusService.java"));
+        assertTrue(files.containsKey("com/example/helloworld/RpcStatus.java"));
         assertTrue(files.containsKey("com/example/helloworld/RpcStatusHandler.java"));
 
-        test_Service(files.get("com/example/helloworld/RpcStatusService.java"));
+        test_Service(files.get("com/example/helloworld/RpcStatus.java"));
         test_Handler(files.get("com/example/helloworld/RpcStatusHandler.java"));
     }
 
@@ -85,7 +85,7 @@ public class StatusGeneratorTest extends BaseGeneratorTest {
         assertEquals(1, cu.getTypes().size());
 
         assertTrue(cu.getType(0).isPublic());
-        assertEquals("RpcStatusService", cu.getType(0).getNameAsString());
+        assertEquals("RpcStatus", cu.getType(0).getNameAsString());
 
         Map<String, MethodDeclaration> methods = cu
             .findAll(MethodDeclaration.class)

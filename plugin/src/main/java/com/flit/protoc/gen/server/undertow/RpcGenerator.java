@@ -67,12 +67,12 @@ class RpcGenerator extends BaseGenerator {
         b.n();
 
         // add the service handler
-        b.iwn("private final Rpc", service.getName(), "Service service;");
+        b.iwn("private final Rpc", service.getName(), " service;");
         b.iwn("private final ErrorWriter errorWriter;");
         b.n();
 
         // add the constructor for the service
-        b.iwn("public Rpc", service.getName(), "Handler(Rpc", service.getName() + "Service service) {");
+        b.iwn("public Rpc", service.getName(), "Handler(Rpc", service.getName() + " service) {");
         b.inc();
         b.iwn("this.service = service;");
         b.iwn("this.errorWriter = new ErrorWriter();");

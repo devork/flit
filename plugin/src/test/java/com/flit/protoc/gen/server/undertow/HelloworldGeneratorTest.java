@@ -33,11 +33,11 @@ public class HelloworldGeneratorTest extends BaseGeneratorTest {
             Function.identity()
         ));
 
-        assertTrue(files.containsKey("com/example/helloworld/RpcHelloWorldService.java"));
+        assertTrue(files.containsKey("com/example/helloworld/RpcHelloWorld.java"));
         assertTrue(files.containsKey("com/example/helloworld/RpcHelloWorldHandler.java"));
 
         // ensure it's parseable java
-        test_Service(files.get("com/example/helloworld/RpcHelloWorldService.java"));
+        test_Service(files.get("com/example/helloworld/RpcHelloWorld.java"));
         test_Handler(files.get("com/example/helloworld/RpcHelloWorldHandler.java"));
     }
 
@@ -92,7 +92,7 @@ public class HelloworldGeneratorTest extends BaseGeneratorTest {
         assertEquals(1, cu.getTypes().size());
 
         assertTrue(cu.getType(0).isPublic());
-        assertEquals("RpcHelloWorldService", cu.getType(0).getNameAsString());
+        assertEquals("RpcHelloWorld", cu.getType(0).getNameAsString());
 
         Map<String, MethodDeclaration> methods = cu
             .findAll(MethodDeclaration.class)
