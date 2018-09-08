@@ -46,10 +46,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-shadowJar.dependsOn build
+shadowJar.dependsOn compileJava
 
 task pack(type: Zip) {
-
     archiveName = "flit-plugin.zip"
     destinationDir = file("${buildDir}/package")
 
@@ -63,3 +62,8 @@ task pack(type: Zip) {
 }
 
 pack.dependsOn shadowJar
+
+artifacts {
+  archives pack
+}
+
