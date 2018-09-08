@@ -15,7 +15,5 @@ dependencies {
     compile "com.google.protobuf:protobuf-java:${protobufVersion}"
     compile "com.google.protobuf:protobuf-java-util:${protobufVersion}"
 
-    compileOnly 'org.projectlombok:lombok:1.18.0'
-
     testCompile 'junit:junit:4.12'
 }

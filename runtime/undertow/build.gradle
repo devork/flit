@@ -16,7 +16,6 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'io.undertow:undertow-core:2.0.9.Final'
     compile 'com.google.code.gson:gson:2.8.5'
-    compileOnly 'org.projectlombok:lombok:1.18.0'
 
     testCompile 'junit:junit:4.12'
 }
