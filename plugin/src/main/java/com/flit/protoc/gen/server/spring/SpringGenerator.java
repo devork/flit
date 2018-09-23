@@ -22,16 +22,12 @@ public class SpringGenerator implements Generator {
     List<PluginProtos.CodeGeneratorResponse.File> files = new ArrayList<>();
 
     TypeMapper mapper = new TypeMapper();
+    request.getProtoFileList().forEach(mapper::add);
 
     request.getProtoFileList().forEach(proto -> {
-
       // Provide handlers for each service entry
       proto.getServiceList().forEach(s -> {
-
-        mapper.add(proto);
-
         String context = null;
-
         if (params.containsKey(PARAM_CONTEXT)) {
           context = params.get(PARAM_CONTEXT).getValue();
         }
@@ -46,12 +42,10 @@ public class SpringGenerator implements Generator {
 
         sgen.writeProlog();
         sgen.writePackage();
-        sgen.open();
 
         sgen.writeService(s);
         rgen.writeService(s);
 
-        sgen.close();
         rgen.close();
 
         files.addAll(sgen.getFiles());

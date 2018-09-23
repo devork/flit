@@ -1,16 +1,9 @@
-[0] = // -------------------------------------------------------------
-// Generated code from flit: Please do not modify
-// -------------------------------------------------------------
-
-
-package com.example.helloworld;
+[0] = package com.example.helloworld;
 
 public interface RpcHelloWorld {
+  Helloworld.HelloResp handleHello(Helloworld.HelloReq in);
 
-    Helloworld.HelloResp handleHello(Helloworld.HelloReq in);
-
-    Helloworld.HelloResp handleHelloAgain(Helloworld.HelloReq in);
-
+  Helloworld.HelloResp handleHelloAgain(Helloworld.HelloReq in);
 }
 
 [1] = // -------------------------------------------------------------

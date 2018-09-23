@@ -17,16 +17,12 @@ public class UndertowGenerator implements Generator {
     List<PluginProtos.CodeGeneratorResponse.File> files = new ArrayList<>();
 
     TypeMapper mapper = new TypeMapper();
+    request.getProtoFileList().forEach(mapper::add);
 
     request.getProtoFileList().forEach(proto -> {
-
-      mapper.add(proto);
-
       // Provide handlers for each service entry
       proto.getServiceList().forEach(s -> {
-
         String context = null;
-
         if (params.containsKey(PARAM_CONTEXT)) {
           context = params.get(PARAM_CONTEXT).getValue();
         }
@@ -41,12 +37,10 @@ public class UndertowGenerator implements Generator {
 
         sgen.writeProlog();
         sgen.writePackage();
-        sgen.open();
 
         sgen.writeService(s);
         rgen.writeService(s);
 
-        sgen.close();
         rgen.close();
 
         files.addAll(sgen.getFiles());
