@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
 public class StatusGeneratorTest extends BaseGeneratorTest {
 
     @Test public void test_Generate() throws Exception {
-        PluginProtos.CodeGeneratorRequest request = load("status.undertow.bin");
+        PluginProtos.CodeGeneratorRequest request = loadJson("status.undertow.json");
 
         Plugin plugin = new Plugin(request);
         PluginProtos.CodeGeneratorResponse response = plugin.process();

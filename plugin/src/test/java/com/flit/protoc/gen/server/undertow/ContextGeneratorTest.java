@@ -19,31 +19,31 @@ public class ContextGeneratorTest extends BaseGeneratorTest {
 
     @Test
     public void test_GenerateWithMissingRoot() throws Exception {
-        test_Route("context.missing.undertow.bin", "/twirp/com.example.context.NullService");
+        test_Route("context.missing.undertow.json", "/twirp/com.example.context.NullService");
     }
 
     @Test
     public void test_GenerateWithEmptyRoot() throws Exception {
-        test_Route("context.empty.undertow.bin", "/twirp/com.example.context.NullService");
+        test_Route("context.empty.undertow.json", "/twirp/com.example.context.NullService");
     }
 
     @Test
     public void test_GenerateWithSlashOnlyRoot() throws Exception {
-        test_Route("context.slash.undertow.bin", "/com.example.context.NullService");
+        test_Route("context.slash.undertow.json", "/com.example.context.NullService");
     }
 
     @Test
     public void test_GenerateWithSlashRoot() throws Exception {
-        test_Route("context.root.undertow.bin", "/root/com.example.context.NullService");
+        test_Route("context.root.undertow.json", "/root/com.example.context.NullService");
     }
 
     @Test
     public void test_GenerateWithNameRoot() throws Exception {
-        test_Route("context.name.undertow.bin", "/fibble/com.example.context.NullService");
+        test_Route("context.name.undertow.json", "/fibble/com.example.context.NullService");
     }
 
     private void test_Route(String file, String route) throws Exception {
-        PluginProtos.CodeGeneratorRequest request = load(file);
+        PluginProtos.CodeGeneratorRequest request = loadJson(file);
 
         Plugin plugin = new Plugin(request);
         PluginProtos.CodeGeneratorResponse response = plugin.process();
