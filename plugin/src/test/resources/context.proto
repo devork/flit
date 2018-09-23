@@ -3,8 +3,9 @@ syntax = "proto3";
 package com.example.context;
 option java_package = "com.example.context.rpc";
 
-message Empty {}
+message Empty {
+}
 
 service NullService {
-    rpc SayNull(Empty) returns (Empty);
+    rpc SayNull (Empty) returns (Empty);
 }

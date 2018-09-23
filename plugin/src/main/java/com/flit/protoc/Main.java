@@ -8,17 +8,11 @@ import com.google.protobuf.compiler.PluginProtos;
  */
 public class Main {
 
-    public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {
 
-        Plugin plugin = new Plugin(
-            PluginProtos.CodeGeneratorRequest
-                .newBuilder()
-                .mergeFrom(System.in)
-                .build()
-        );
+    Plugin plugin = new Plugin(PluginProtos.CodeGeneratorRequest.newBuilder().mergeFrom(System.in).build());
 
-        plugin.process().writeTo(System.out);
-    }
-
+    plugin.process().writeTo(System.out);
+  }
 
 }

@@ -25,5 +25,5 @@ message StatusResponse {
 
 // Status service will provide specifics on the current state of the server
 service Status {
-    rpc GetStatus(Empty) returns (StatusResponse);
+    rpc GetStatus (Empty) returns (StatusResponse);
 }

@@ -15,21 +15,21 @@ import static org.junit.Assert.assertNotNull;
  */
 public class StatusGeneratorTest extends BaseGeneratorTest {
 
-    @Test public void test_Generate() throws Exception {
-        PluginProtos.CodeGeneratorRequest request = loadJson("status.spring.json");
+  @Test public void test_Generate() throws Exception {
+    PluginProtos.CodeGeneratorRequest request = loadJson("status.spring.json");
 
-        Plugin plugin = new Plugin(request);
-        PluginProtos.CodeGeneratorResponse response = plugin.process();
+    Plugin plugin = new Plugin(request);
+    PluginProtos.CodeGeneratorResponse response = plugin.process();
 
-        assertNotNull(response);
-        assertEquals(2, response.getFileCount());
+    assertNotNull(response);
+    assertEquals(2, response.getFileCount());
 
-        assertEquals(response.getFile(0).getName(), "com/example/helloworld/RpcStatus.java");
-        assertEquals(response.getFile(1).getName(), "com/example/helloworld/RpcStatusController.java");
+    assertEquals(response.getFile(0).getName(), "com/example/helloworld/RpcStatus.java");
+    assertEquals(response.getFile(1).getName(), "com/example/helloworld/RpcStatusController.java");
 
-        // Looks like there is a bug, Core.Empty is not working
-        // response.getFileList().forEach(f -> assertParses(f));
-        Approvals.verifyAll("", response.getFileList().stream().map(f -> f.getContent()).collect(toList()));
-    }
+    // Looks like there is a bug, Core.Empty is not working
+    // response.getFileList().forEach(f -> assertParses(f));
+    Approvals.verifyAll("", response.getFileList().stream().map(f -> f.getContent()).collect(toList()));
+  }
 
 }

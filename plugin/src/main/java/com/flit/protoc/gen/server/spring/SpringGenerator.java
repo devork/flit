@@ -17,51 +17,49 @@ import static com.flit.protoc.Parameter.PARAM_CONTEXT;
  */
 public class SpringGenerator implements Generator {
 
-    @Override
-    public List<PluginProtos.CodeGeneratorResponse.File> generate(PluginProtos.CodeGeneratorRequest request, Map<String, Parameter> params) {
+  @Override public List<PluginProtos.CodeGeneratorResponse.File> generate(PluginProtos.CodeGeneratorRequest request, Map<String, Parameter> params) {
 
-        List<PluginProtos.CodeGeneratorResponse.File> files = new ArrayList<>();
+    List<PluginProtos.CodeGeneratorResponse.File> files = new ArrayList<>();
 
-        TypeMapper mapper = new TypeMapper();
+    TypeMapper mapper = new TypeMapper();
 
-        request.getProtoFileList().forEach(proto -> {
+    request.getProtoFileList().forEach(proto -> {
 
-            // Provide handlers for each service entry
-            proto.getServiceList().forEach(s -> {
+      // Provide handlers for each service entry
+      proto.getServiceList().forEach(s -> {
 
-                mapper.add(proto);
+        mapper.add(proto);
 
-                String context = null;
+        String context = null;
 
-                if (params.containsKey(PARAM_CONTEXT)) {
-                    context = params.get(PARAM_CONTEXT).getValue();
-                }
+        if (params.containsKey(PARAM_CONTEXT)) {
+          context = params.get(PARAM_CONTEXT).getValue();
+        }
 
-                ServiceGenerator sgen = new ServiceGenerator(proto, s, mapper);
-                RpcGenerator rgen = new RpcGenerator(proto, s, context, mapper);
+        ServiceGenerator sgen = new ServiceGenerator(proto, s, mapper);
+        RpcGenerator rgen = new RpcGenerator(proto, s, context, mapper);
 
-                rgen.writeProlog();
-                rgen.writePackage();
-                rgen.writeImports();
-                rgen.open();
+        rgen.writeProlog();
+        rgen.writePackage();
+        rgen.writeImports();
+        rgen.open();
 
-                sgen.writeProlog();
-                sgen.writePackage();
-                sgen.open();
+        sgen.writeProlog();
+        sgen.writePackage();
+        sgen.open();
 
-                sgen.writeService(s);
-                rgen.writeService(s);
+        sgen.writeService(s);
+        rgen.writeService(s);
 
-                sgen.close();
-                rgen.close();
+        sgen.close();
+        rgen.close();
 
-                files.addAll(sgen.getFiles());
-                files.addAll(rgen.getFiles());
-            });
+        files.addAll(sgen.getFiles());
+        files.addAll(rgen.getFiles());
+      });
 
+    });
 
-        });
-
-        return files;
-    }
+    return files;
+  }
 }

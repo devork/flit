@@ -12,20 +12,19 @@ import static org.junit.Assert.assertNotNull;
 
 public class HelloworldGeneratorTest extends BaseGeneratorTest {
 
-    @Test
-    public void test_Generate() throws Exception {
-        PluginProtos.CodeGeneratorRequest request = loadJson("helloworld.spring.json");
+  @Test public void test_Generate() throws Exception {
+    PluginProtos.CodeGeneratorRequest request = loadJson("helloworld.spring.json");
 
-        Plugin plugin = new Plugin(request);
-        PluginProtos.CodeGeneratorResponse response = plugin.process();
+    Plugin plugin = new Plugin(request);
+    PluginProtos.CodeGeneratorResponse response = plugin.process();
 
-        assertNotNull(response);
-        assertEquals(2, response.getFileCount());
-        assertEquals(response.getFile(0).getName(), "com/example/helloworld/RpcHelloWorld.java");
-        assertEquals(response.getFile(1).getName(), "com/example/helloworld/RpcHelloWorldController.java");
+    assertNotNull(response);
+    assertEquals(2, response.getFileCount());
+    assertEquals(response.getFile(0).getName(), "com/example/helloworld/RpcHelloWorld.java");
+    assertEquals(response.getFile(1).getName(), "com/example/helloworld/RpcHelloWorldController.java");
 
-        response.getFileList().forEach(f -> assertParses(f));
-        Approvals.verifyAll("", response.getFileList().stream().map(f -> f.getContent()).collect(toList()));
-    }
+    response.getFileList().forEach(f -> assertParses(f));
+    Approvals.verifyAll("", response.getFileList().stream().map(f -> f.getContent()).collect(toList()));
+  }
 
 }

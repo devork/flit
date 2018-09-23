@@ -11,14 +11,14 @@ import java.util.Map;
  */
 public interface Generator {
 
-    /**
-     * This is the main entry point to code generation: the implementation is decided in the {@link com.flit.protoc.Plugin}
-     * class from the given parameters.
-     *
-     * @param request   The inbound protoc request
-     * @param params    The plugin parameters
-     *
-     * @return  The list of files to be added to the output.
-     */
-    List<PluginProtos.CodeGeneratorResponse.File> generate(PluginProtos.CodeGeneratorRequest request, Map<String, Parameter> params);
+  /**
+   * This is the main entry point to code generation: the implementation is decided in the {@link com.flit.protoc.Plugin}
+   * class from the given parameters.
+   *
+   * @param request   The inbound protoc request
+   * @param params    The plugin parameters
+   *
+   * @return The list of files to be added to the output.
+   */
+  List<PluginProtos.CodeGeneratorResponse.File> generate(PluginProtos.CodeGeneratorRequest request, Map<String, Parameter> params);
 }
