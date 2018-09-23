@@ -1,4 +1,4 @@
-package com.flit.protoc.gen.server.undertow;
+package com.flit.protoc.gen.server.spring;
 
 import com.flit.protoc.Plugin;
 import com.flit.protoc.gen.BaseGeneratorTest;
@@ -14,7 +14,7 @@ public class HelloworldGeneratorTest extends BaseGeneratorTest {
 
     @Test
     public void test_Generate() throws Exception {
-        PluginProtos.CodeGeneratorRequest request = loadJson("helloworld.undertow.json");
+        PluginProtos.CodeGeneratorRequest request = loadJson("helloworld.spring.json");
 
         Plugin plugin = new Plugin(request);
         PluginProtos.CodeGeneratorResponse response = plugin.process();
@@ -22,7 +22,7 @@ public class HelloworldGeneratorTest extends BaseGeneratorTest {
         assertNotNull(response);
         assertEquals(2, response.getFileCount());
         assertEquals(response.getFile(0).getName(), "com/example/helloworld/RpcHelloWorld.java");
-        assertEquals(response.getFile(1).getName(), "com/example/helloworld/RpcHelloWorldHandler.java");
+        assertEquals(response.getFile(1).getName(), "com/example/helloworld/RpcHelloWorldController.java");
 
         response.getFileList().forEach(f -> assertParses(f));
         Approvals.verifyAll("", response.getFileList().stream().map(f -> f.getContent()).collect(toList()));

@@ -1,4 +1,4 @@
-package com.flit.protoc.gen.server.undertow;
+package com.flit.protoc.gen;
 
 import com.github.javaparser.JavaParser;
 import com.google.protobuf.MessageOrBuilder;
@@ -28,7 +28,11 @@ public abstract class BaseGeneratorTest {
   }
 
   protected static void assertParses(PluginProtos.CodeGeneratorResponse.File file) {
-    JavaParser.parse(file.getContent());
+    try {
+      JavaParser.parse(file.getContent());
+    } catch (Exception e) {
+      throw new RuntimeException("Could not parse " + file.getName(), e);
+    }
   }
 
 }
