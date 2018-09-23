@@ -39,7 +39,7 @@ public class ServiceGenerator extends BaseGenerator {
 
   @Override public List<PluginProtos.CodeGeneratorResponse.File> getFiles() {
     PluginProtos.CodeGeneratorResponse.File.Builder builder = PluginProtos.CodeGeneratorResponse.File.newBuilder();
-    builder.setName(javaPackage.replace(".", "/") + "/Rpc" + service.getName() + ".java");
+    builder.setName(getFileName("Rpc" + service.getName()));
     JavaFile file = JavaFile.builder(javaPackage, rpcInterface.build()).build();
     builder.setContent(file.toString());
     return Collections.singletonList(builder.build());

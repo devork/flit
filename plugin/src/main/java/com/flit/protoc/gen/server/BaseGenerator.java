@@ -50,6 +50,10 @@ public abstract class BaseGenerator {
     return parts[parts.length - 1];
   }
 
+  protected String getFileName(String className) {
+    return javaPackage.replace(".", "/") + "/" + className + ".java";
+  }
+
   protected static String getContext(String context) {
     if (context == null) {
       return "/twirp";

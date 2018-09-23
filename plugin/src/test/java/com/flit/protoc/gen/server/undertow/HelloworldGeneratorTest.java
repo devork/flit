@@ -23,8 +23,8 @@ public class HelloworldGeneratorTest extends BaseGeneratorTest {
     assertEquals(response.getFile(0).getName(), "com/example/helloworld/RpcHelloWorld.java");
     assertEquals(response.getFile(1).getName(), "com/example/helloworld/RpcHelloWorldHandler.java");
 
-    response.getFileList().forEach(f -> assertParses(f));
     Approvals.verifyAll("", response.getFileList().stream().map(f -> f.getContent()).collect(toList()));
+    response.getFileList().forEach(f -> assertParses(f));
   }
 
 }
