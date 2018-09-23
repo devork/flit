@@ -33,22 +33,11 @@ public class SpringGenerator implements Generator {
         }
 
         ServiceGenerator sgen = new ServiceGenerator(proto, s, mapper);
-        RpcGenerator rgen = new RpcGenerator(proto, s, context, mapper);
-
-        rgen.writeProlog();
-        rgen.writePackage();
-        rgen.writeImports();
-        rgen.open();
-
-        sgen.writeProlog();
-        sgen.writePackage();
-
         sgen.writeService(s);
-        rgen.writeService(s);
-
-        rgen.close();
-
         files.addAll(sgen.getFiles());
+
+        RpcGenerator rgen = new RpcGenerator(proto, s, context, mapper);
+        rgen.writeService(s);
         files.addAll(rgen.getFiles());
       });
 

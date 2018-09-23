@@ -142,10 +142,6 @@ class RpcGenerator extends BaseGenerator {
   }
 
   @Override public List<PluginProtos.CodeGeneratorResponse.File> getFiles() {
-    PluginProtos.CodeGeneratorResponse.File.Builder builder = PluginProtos.CodeGeneratorResponse.File.newBuilder();
-    builder.setName(getFileName(getHandlerName(service).simpleName()));
-    JavaFile file = JavaFile.builder(javaPackage, rpcHandler.build()).build();
-    builder.setContent(file.toString());
-    return Collections.singletonList(builder.build());
+    return Collections.singletonList(toFile(getHandlerName(service), rpcHandler.build()));
   }
 }

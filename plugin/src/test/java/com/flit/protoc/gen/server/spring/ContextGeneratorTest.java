@@ -25,7 +25,7 @@ public class ContextGeneratorTest extends BaseGeneratorTest {
   }
 
   @Test public void test_GenerateWithSlashOnlyRoot() throws Exception {
-    test_Route("context.slash.spring.json", "//com.example.context.NullService/SayNull");
+    test_Route("context.slash.spring.json", "/com.example.context.NullService/SayNull");
   }
 
   @Test public void test_GenerateWithSlashRoot() throws Exception {
@@ -54,7 +54,7 @@ public class ContextGeneratorTest extends BaseGeneratorTest {
 
     assertTrue(files.get("com/example/context/rpc/RpcNullServiceController.java")
       .getContent()
-      .contains(String.format("@PostMapping(value=\"%s\")", route)));
+      .contains(String.format("@PostMapping(\"%s\")", route)));
   }
 
 }

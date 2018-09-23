@@ -3,6 +3,9 @@ package com.flit.protoc.gen.server;
 import com.flit.protoc.gen.Buffer;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.TypeSpec;
 
 import java.util.List;
 
@@ -69,4 +72,11 @@ public abstract class BaseGenerator {
     }
   }
 
+  /** Assumes name+type is a top-level type and turns it into the protobuf output file type. */
+  protected static PluginProtos.CodeGeneratorResponse.File toFile(ClassName name, TypeSpec type) {
+    return PluginProtos.CodeGeneratorResponse.File.newBuilder()
+      .setName(name.toString().replace(".", "/") + ".java")
+      .setContent(JavaFile.builder(name.packageName(), type).build().toString())
+      .build();
+  }
 }

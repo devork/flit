@@ -4,57 +4,48 @@ public interface RpcStatus {
   StatusOuterClass.StatusResponse handleGetStatus(Core.Empty in);
 }
 
-[1] = // -------------------------------------------------------------
-// Generated code from flit: Please do not modify
-// -------------------------------------------------------------
-
-
-package com.example.helloworld;
+[1] = package com.example.helloworld;
 
 import com.google.protobuf.util.JsonFormat;
-
+import java.io.InputStreamReader;
+import java.lang.Exception;
+import java.nio.charset.StandardCharsets;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-
 @RestController
 public class RpcStatusController {
+  @Autowired
+  private RpcStatus service;
 
-    @Autowired
-    private RpcStatus service;
-
-    @PostMapping(value="/twirp/com.example.helloworld.Status/GetStatus")
-    public void handleGetStatus(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        boolean json = false;
-        StatusOuterClass.Empty data;
-        if (request.getContentType().equals("application/protobuf")) {
-            data = StatusOuterClass.Empty.parseFrom(request.getInputStream());
-        } else if (request.getContentType().startsWith("application/json")) {
-            json = true;
-            StatusOuterClass.Empty.Builder builder = StatusOuterClass.Empty.newBuilder();
-            JsonFormat.parser().merge(new InputStreamReader(request.getInputStream(), Charset.forName("UTF-8")), builder);
-            data = builder.build();
-        } else {
-            response.setStatus(415);
-            return;
-        }
-
-        StatusOuterClass.StatusResponse retval = service.handleGetStatus(data);
-        response.setStatus(200);
-        if (json) {
-            response.setContentType("application/json;charset=UTF-8");
-            response.getOutputStream().write(JsonFormat.printer().omittingInsignificantWhitespace().print(retval).getBytes(Charset.forName("UTF-8")));
-            return;
-        }
-
-        response.setContentType("application/protobuf");
-        retval.writeTo(response.getOutputStream());
+  @PostMapping("/twirp/com.example.helloworld.Status/GetStatus")
+  public void handleGetStatus(HttpServletRequest request, HttpServletResponse response) throws
+      Exception {
+    boolean json = false;
+    final Core.Empty data;
+    if (request.getContentType().equals("application/protobuf")) {
+      data = Core.Empty.parseFrom(request.getInputStream());
+    } else if (request.getContentType().startsWith("application/json")) {
+      json = true;
+      Core.Empty.Builder builder = Core.Empty.newBuilder();
+      JsonFormat.parser().merge(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8), builder);
+      data = builder.build();
+    } else {
+      response.setStatus(415);
+      return;
     }
-
+    StatusOuterClass.StatusResponse retval = service.handleGetStatus(data);
+    response.setStatus(200);
+    if (json) {
+      response.setContentType("application/json;charset=UTF-8");
+      response.getOutputStream().write(JsonFormat.printer().omittingInsignificantWhitespace().print(retval).getBytes(StandardCharsets.UTF_8));
+    } else {
+      response.setContentType("application/protobuf");
+      retval.writeTo(response.getOutputStream());
+    }
+  }
 }
 

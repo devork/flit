@@ -28,8 +28,6 @@ public class UndertowGenerator implements Generator {
         }
 
         ServiceGenerator sgen = new ServiceGenerator(proto, s, mapper);
-        sgen.writeProlog();
-        sgen.writePackage();
         sgen.writeService(s);
         files.addAll(sgen.getFiles());
 
