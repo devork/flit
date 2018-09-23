@@ -1,0 +1,103 @@
+[0] = // -------------------------------------------------------------
+// Generated code from flit: Please do not modify
+// -------------------------------------------------------------
+
+
+package com.example.helloworld;
+
+public interface RpcStatus {
+
+    StatusOuterClass.StatusResponse handleGetStatus(Core.Empty in);
+
+}
+
+[1] = // -------------------------------------------------------------
+// Generated code from flit: Please do not modify
+// -------------------------------------------------------------
+
+
+package com.example.helloworld;
+
+import com.flit.runtime.undertow.ErrorWriter;
+import com.google.protobuf.util.JsonFormat;
+
+import com.flit.runtime.ErrorCode;
+import com.flit.runtime.FlitException;
+import io.undertow.server.HttpHandler;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+
+import static com.flit.runtime.undertow.FlitHandler.KEY_METHOD;
+
+public class RpcStatusHandler implements HttpHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RpcStatusHandler.class);
+    public static final String ROUTE = "/twirp/com.example.helloworld.Status";
+
+    private final RpcStatus service;
+    private final ErrorWriter errorWriter;
+
+    public RpcStatusHandler(RpcStatus service) {
+        this.service = service;
+        this.errorWriter = new ErrorWriter();
+    }
+
+    @Override
+    public void handleRequest(HttpServerExchange exchange) throws Exception {
+        if (exchange.isInIoThread()) {
+            exchange.dispatch(this);
+            return;
+        }
+
+        exchange.startBlocking();
+
+        String method = exchange.getAttachment(KEY_METHOD);
+
+        try {
+            switch(method) {
+                case "GetStatus": handleGetStatus(exchange); break;
+                default:
+                    throw FlitException.builder().withErrorCode(ErrorCode.BAD_ROUTE).withMessage("No such route").build();
+            }
+        } catch (FlitException e) {
+            errorWriter.write(e, exchange);
+        } catch (Exception e) {
+            LOGGER.error("Exception caught at handler: error = {}", e.getMessage(), e);
+            errorWriter.write(e, exchange);
+        }
+    }
+
+    private void handleGetStatus(HttpServerExchange exchange) throws Exception {
+        boolean json = false;
+        Core.Empty data;
+        if (exchange.getRequestHeaders().get(Headers.CONTENT_TYPE).getFirst().equals("application/protobuf")) {
+            data = Core.Empty.parseFrom(exchange.getInputStream());
+        } else if (exchange.getRequestHeaders().get(Headers.CONTENT_TYPE).getFirst().startsWith("application/json")) {
+            json = true;
+            Core.Empty.Builder builder = Core.Empty.newBuilder();
+            JsonFormat.parser().merge(new InputStreamReader(exchange.getInputStream(), Charset.forName("UTF-8")), builder);
+            data = builder.build();
+        } else {
+            exchange.setStatusCode(415);
+            return;
+        }
+
+        StatusOuterClass.StatusResponse retval = service.handleGetStatus(data);
+        exchange.setStatusCode(200);
+        if (json) {
+            exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json;charset=UTF-8");
+            exchange.getResponseSender().send(JsonFormat.printer().omittingInsignificantWhitespace().print(retval));
+            return;
+        }
+
+        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/protobuf");
+        retval.writeTo(exchange.getOutputStream());
+    }
+
+}
+

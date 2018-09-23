@@ -30,7 +30,6 @@ public abstract class BaseGenerator {
     public void writeProlog() {
         b.wn("// -------------------------------------------------------------");
         b.wn("// Generated code from flit: Please do not modify");
-        b.wn("// Created: ", Instant.now().toString());
         b.wn("// -------------------------------------------------------------");
         b.wn("\n");
     }
