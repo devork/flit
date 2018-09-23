@@ -50,4 +50,19 @@ public abstract class BaseGenerator {
     return parts[parts.length - 1];
   }
 
+  protected static String getContext(String context) {
+    if (context == null) {
+      return "/twirp";
+    } else {
+      context = context.trim();
+      if (context.equals("") || context.equals("/")) {
+        return ""; // empty route - i.e. top level "/"
+      } else if (context.startsWith("/")) {
+        return context;
+      } else {
+        return "/" + context;
+      }
+    }
+  }
+
 }

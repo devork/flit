@@ -16,20 +16,7 @@ class RpcGenerator extends BaseGenerator {
   RpcGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto service, String context, TypeMapper mapper) {
     super(proto, service, mapper);
     this.filename = javaPackage.replace(".", "/") + "/Rpc" + this.service.getName() + "Handler.java";
-
-    if (context == null) {
-      this.context = "/twirp";
-    } else {
-      context = context.trim();
-      if (context.equals("") || context.equals("/")) {
-        // empty route - i.e. top level "/"
-        this.context = "";
-      } else if (context.startsWith("/")) {
-        this.context = context;
-      } else {
-        this.context = "/" + context;
-      }
-    }
+    this.context = getContext(context);
   }
 
   void writeImports() {
