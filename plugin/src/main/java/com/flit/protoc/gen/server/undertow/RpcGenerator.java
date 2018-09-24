@@ -2,6 +2,7 @@ package com.flit.protoc.gen.server.undertow;
 
 import com.flit.protoc.gen.server.BaseGenerator;
 import com.flit.protoc.gen.server.TypeMapper;
+import com.flit.protoc.gen.server.Types;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import com.squareup.javapoet.*;
@@ -11,9 +12,9 @@ import java.lang.String;
 import java.util.Collections;
 import java.util.List;
 
-import static com.flit.protoc.gen.server.undertow.Types.*;
-import static com.flit.protoc.gen.server.undertow.Types.Exception;
-import static com.flit.protoc.gen.server.undertow.Types.Override;
+import static com.flit.protoc.gen.server.Types.*;
+import static com.flit.protoc.gen.server.Types.Exception;
+import static com.flit.protoc.gen.server.Types.Override;
 import static javax.lang.model.element.Modifier.*;
 
 class RpcGenerator extends BaseGenerator {

@@ -2,7 +2,7 @@ package com.flit.protoc.gen.server.spring;
 
 import com.flit.protoc.gen.server.BaseGenerator;
 import com.flit.protoc.gen.server.TypeMapper;
-import com.flit.protoc.gen.server.undertow.Types;
+import com.flit.protoc.gen.server.Types;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import com.squareup.javapoet.*;

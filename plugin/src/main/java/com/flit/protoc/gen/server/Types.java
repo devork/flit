@@ -1,4 +1,4 @@
-package com.flit.protoc.gen.server.undertow;
+package com.flit.protoc.gen.server;
 
 import com.squareup.javapoet.ClassName;
 
