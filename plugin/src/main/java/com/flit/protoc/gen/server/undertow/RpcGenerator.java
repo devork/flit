@@ -33,10 +33,6 @@ class RpcGenerator extends BaseGenerator {
     return ClassName.get(javaPackage, "Rpc" + service.getName() + "Handler");
   }
 
-  private ClassName getServiceInterface(DescriptorProtos.ServiceDescriptorProto service) {
-    return ClassName.get(javaPackage, "Rpc" + service.getName());
-  }
-
   void writeService() {
     addStaticFields();
     addInstanceFields();
@@ -60,14 +56,14 @@ class RpcGenerator extends BaseGenerator {
 
   private void addInstanceFields() {
     // add service instance and error
-    rpcHandler.addField(FieldSpec.builder(getServiceInterface(service), "service").addModifiers(PRIVATE, FINAL).build());
+    rpcHandler.addField(FieldSpec.builder(getServiceInterface(), "service").addModifiers(PRIVATE, FINAL).build());
     rpcHandler.addField(FieldSpec.builder(ErrorWriter, "errorWriter").addModifiers(PRIVATE, FINAL).build());
   }
 
   private void addConstructor() {
     rpcHandler.addMethod(MethodSpec.constructorBuilder()
       .addModifiers(PUBLIC)
-      .addParameter(getServiceInterface(service), "service")
+      .addParameter(getServiceInterface(), "service")
       .addStatement("this.service = service")
       .addStatement("this.errorWriter = new $T()", ErrorWriter)
       .build());

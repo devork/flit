@@ -28,6 +28,11 @@ public abstract class BaseGenerator {
     return javaPackage.replace(".", "/") + "/" + className + ".java";
   }
 
+  /** Returns the {@code Rpc${Service}} synchronous interface. */
+  protected ClassName getServiceInterface() {
+    return ClassName.get(javaPackage, "Rpc" + service.getName());
+  }
+
   protected static String getContext(String context) {
     if (context == null) {
       return "/twirp";

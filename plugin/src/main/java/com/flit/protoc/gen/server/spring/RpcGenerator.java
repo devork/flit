@@ -85,10 +85,6 @@ class RpcGenerator extends BaseGenerator {
     return ClassName.get(javaPackage, "Rpc" + service.getName() + "Controller");
   }
 
-  private ClassName getServiceInterface() {
-    return ClassName.get(javaPackage, "Rpc" + service.getName());
-  }
-
   @Override public List<PluginProtos.CodeGeneratorResponse.File> getFiles() {
     return Collections.singletonList(toFile(getControllerName(), rpcController.build()));
   }

@@ -3,7 +3,6 @@ package com.flit.protoc.gen.server;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
@@ -38,10 +37,6 @@ public class ServiceGenerator extends BaseGenerator {
   }
 
   @Override public List<PluginProtos.CodeGeneratorResponse.File> getFiles() {
-    PluginProtos.CodeGeneratorResponse.File.Builder builder = PluginProtos.CodeGeneratorResponse.File.newBuilder();
-    builder.setName(getFileName("Rpc" + service.getName()));
-    JavaFile file = JavaFile.builder(javaPackage, rpcInterface.build()).build();
-    builder.setContent(file.toString());
-    return Collections.singletonList(builder.build());
+    return Collections.singletonList(toFile(getServiceInterface(), rpcInterface.build()));
   }
 }
