@@ -16,8 +16,8 @@ group 'com.flit'
 
 sourceCompatibility = 1.8
 
-if (!(project.hasProperty("release") && project.properties['release'] == "true")) {
-    project.version += ".snapshot." + project.scm.tstamp
+configurations {
+    zip
 }
 
 shadowJar {
@@ -66,6 +66,6 @@ task pack(type: Zip) {
 pack.dependsOn shadowJar
 
 artifacts {
-  archives pack
+  zip pack
 }
 
