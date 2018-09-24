@@ -1,38 +1,16 @@
 package com.flit.protoc.gen.server.undertow;
 
-import com.flit.protoc.Parameter;
-import com.flit.protoc.gen.Generator;
-import com.flit.protoc.gen.server.ServiceGenerator;
+import com.flit.protoc.gen.server.BaseGenerator;
+import com.flit.protoc.gen.server.BaseServerGenerator;
 import com.flit.protoc.gen.server.TypeMapper;
-import com.google.protobuf.compiler.PluginProtos;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+public class UndertowGenerator extends BaseServerGenerator {
 
-import static com.flit.protoc.Parameter.PARAM_CONTEXT;
-
-public class UndertowGenerator implements Generator {
-  @Override public List<PluginProtos.CodeGeneratorResponse.File> generate(PluginProtos.CodeGeneratorRequest request, Map<String, Parameter> params) {
-    List<PluginProtos.CodeGeneratorResponse.File> files = new ArrayList<>();
-
-    TypeMapper mapper = new TypeMapper();
-    request.getProtoFileList().forEach(mapper::add);
-
-    request.getProtoFileList().forEach(proto -> {
-      // Provide handlers for each service entry
-      proto.getServiceList().forEach(s -> {
-        String context = null;
-        if (params.containsKey(PARAM_CONTEXT)) {
-          context = params.get(PARAM_CONTEXT).getValue();
-        }
-
-        files.addAll(new ServiceGenerator(proto, s, mapper).getFiles());
-        files.addAll(new RpcGenerator(proto, s, context, mapper).getFiles());
-      });
-
-    });
-
-    return files;
+  @Override protected BaseGenerator getRpcGenerator(
+    FileDescriptorProto proto, ServiceDescriptorProto service, String context, TypeMapper mapper) {
+    return new RpcGenerator(proto, service, context, mapper);
   }
+
 }

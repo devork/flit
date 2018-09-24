@@ -3,12 +3,20 @@ package com.flit.protoc.gen.server;
 import com.google.protobuf.DescriptorProtos;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TypeMapper {
 
   // holds the qualified class name to the short class reference
   private final Map<String, String> mapping = new HashMap<>();
+
+  public TypeMapper() {
+  }
+
+  public TypeMapper(List<DescriptorProtos.FileDescriptorProto> files) {
+    files.forEach(this::add);
+  }
 
   public void add(DescriptorProtos.FileDescriptorProto proto) {
     proto.getMessageTypeList().forEach(m -> {
