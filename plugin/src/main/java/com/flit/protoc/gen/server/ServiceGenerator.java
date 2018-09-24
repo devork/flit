@@ -28,9 +28,9 @@ public class ServiceGenerator extends BaseGenerator {
 
   private void addHandleMethod(DescriptorProtos.MethodDescriptorProto m) {
     rpcInterface.addMethod(MethodSpec.methodBuilder("handle" + m.getName())
-      .addParameter(ClassName.bestGuess(mapper.get(m.getInputType())), "in")
+      .addParameter(mapper.get(m.getInputType()), "in")
       .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-      .returns(ClassName.bestGuess(mapper.get(m.getOutputType())))
+      .returns(mapper.get(m.getOutputType()))
       .build());
   }
 

@@ -101,8 +101,8 @@ class RpcGenerator extends BaseGenerator {
   }
 
   private void writeHandleMethod(DescriptorProtos.MethodDescriptorProto m) {
-    ClassName inputType = ClassName.bestGuess(mapper.get(m.getInputType()));
-    ClassName outputType = ClassName.bestGuess(mapper.get(m.getOutputType()));
+    ClassName inputType = mapper.get(m.getInputType());
+    ClassName outputType = mapper.get(m.getOutputType());
     rpcHandler.addMethod(MethodSpec.methodBuilder("handle" + m.getName())
       .addModifiers(PRIVATE)
       .addParameter(HttpServerExchange, "exchange")

@@ -1,6 +1,7 @@
 package com.flit.protoc.gen.server;
 
 import com.google.protobuf.DescriptorProtos;
+import com.squareup.javapoet.ClassName;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,8 +25,8 @@ public class TypeMapper {
     });
   }
 
-  public String get(String fqn) {
-    return mapping.get(fqn);
+  public ClassName get(String protobufFqcn) {
+    return ClassName.bestGuess(mapping.get(protobufFqcn));
   }
 
   public static String getClassname(DescriptorProtos.FileDescriptorProto proto) {
