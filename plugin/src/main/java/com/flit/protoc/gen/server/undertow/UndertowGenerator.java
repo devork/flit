@@ -27,13 +27,8 @@ public class UndertowGenerator implements Generator {
           context = params.get(PARAM_CONTEXT).getValue();
         }
 
-        ServiceGenerator sgen = new ServiceGenerator(proto, s, mapper);
-        sgen.writeService(s);
-        files.addAll(sgen.getFiles());
-
-        RpcGenerator rgen = new RpcGenerator(proto, s, context, mapper);
-        rgen.writeService();
-        files.addAll(rgen.getFiles());
+        files.addAll(new ServiceGenerator(proto, s, mapper).getFiles());
+        files.addAll(new RpcGenerator(proto, s, context, mapper).getFiles());
       });
 
     });

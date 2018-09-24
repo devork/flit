@@ -18,7 +18,6 @@ import static com.flit.protoc.Parameter.PARAM_CONTEXT;
 public class SpringGenerator implements Generator {
 
   @Override public List<PluginProtos.CodeGeneratorResponse.File> generate(PluginProtos.CodeGeneratorRequest request, Map<String, Parameter> params) {
-
     List<PluginProtos.CodeGeneratorResponse.File> files = new ArrayList<>();
 
     TypeMapper mapper = new TypeMapper();
@@ -32,13 +31,8 @@ public class SpringGenerator implements Generator {
           context = params.get(PARAM_CONTEXT).getValue();
         }
 
-        ServiceGenerator sgen = new ServiceGenerator(proto, s, mapper);
-        sgen.writeService(s);
-        files.addAll(sgen.getFiles());
-
-        RpcGenerator rgen = new RpcGenerator(proto, s, context, mapper);
-        rgen.writeService(s);
-        files.addAll(rgen.getFiles());
+        files.addAll(new ServiceGenerator(proto, s, mapper).getFiles());
+        files.addAll(new RpcGenerator(proto, s, context, mapper).getFiles());
       });
 
     });

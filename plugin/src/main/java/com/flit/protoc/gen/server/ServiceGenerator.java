@@ -23,17 +23,15 @@ public class ServiceGenerator extends BaseGenerator {
     super(proto, s, mapper);
     rpcInterface = TypeSpec.interfaceBuilder(ClassName.get(javaPackage, "Rpc" + service.getName()));
     rpcInterface.addModifiers(Modifier.PUBLIC);
+    service.getMethodList().forEach(this::addHandleMethod);
   }
 
-  public void writeService(DescriptorProtos.ServiceDescriptorProto s) {
-    s.getMethodList().forEach(m -> {
-      rpcInterface.addMethod(MethodSpec.methodBuilder("handle" + m.getName())
-        .addParameter(ClassName.bestGuess(mapper.get(m.getInputType())), "in")
-        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-        .returns(ClassName.bestGuess(mapper.get(m.getOutputType())))
-        .build());
-    });
-
+  private void addHandleMethod(DescriptorProtos.MethodDescriptorProto m) {
+    rpcInterface.addMethod(MethodSpec.methodBuilder("handle" + m.getName())
+      .addParameter(ClassName.bestGuess(mapper.get(m.getInputType())), "in")
+      .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+      .returns(ClassName.bestGuess(mapper.get(m.getOutputType())))
+      .build());
   }
 
   @Override public List<PluginProtos.CodeGeneratorResponse.File> getFiles() {

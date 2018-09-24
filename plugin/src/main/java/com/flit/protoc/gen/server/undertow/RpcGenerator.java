@@ -27,18 +27,15 @@ class RpcGenerator extends BaseGenerator {
     rpcHandler = TypeSpec.classBuilder(getHandlerName(service))
       .addModifiers(PUBLIC)
       .addSuperinterface(ClassName.bestGuess("io.undertow.server.HttpHandler"));
-  }
-
-  private ClassName getHandlerName(DescriptorProtos.ServiceDescriptorProto service) {
-    return ClassName.get(javaPackage, "Rpc" + service.getName() + "Handler");
-  }
-
-  void writeService() {
     addStaticFields();
     addInstanceFields();
     addConstructor();
     writeHandleRequest();
     service.getMethodList().forEach(this::writeHandleMethod);
+  }
+
+  private ClassName getHandlerName(DescriptorProtos.ServiceDescriptorProto service) {
+    return ClassName.get(javaPackage, "Rpc" + service.getName() + "Handler");
   }
 
   private void addStaticFields() {
@@ -70,7 +67,7 @@ class RpcGenerator extends BaseGenerator {
   }
 
   // write the handleRequest routing method table
-  void writeHandleRequest() {
+  private void writeHandleRequest() {
     rpcHandler.addMethod(MethodSpec.methodBuilder("handleRequest")
       .addAnnotation(Override)
       .addModifiers(PUBLIC)

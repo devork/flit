@@ -26,11 +26,8 @@ class RpcGenerator extends BaseGenerator {
     super(proto, service, mapper);
     this.context = getContext(context);
     rpcController = TypeSpec.classBuilder(getControllerName()).addModifiers(Modifier.PUBLIC).addAnnotation(RestController);
-  }
-
-  void writeService(DescriptorProtos.ServiceDescriptorProto s) {
     addInstanceFields();
-    s.getMethodList().forEach(this::addHandleMethod);
+    service.getMethodList().forEach(this::addHandleMethod);
   }
 
   private void addInstanceFields() {
