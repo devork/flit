@@ -5,14 +5,15 @@ plugins {
 group 'com.flit'
 archivesBaseName = 'flit-core-runtime'
 sourceCompatibility = 1.8
+def protobufVersion = '3.5.1'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-
-    compileOnly 'org.projectlombok:lombok:1.18.0'
+    compile "com.google.protobuf:protobuf-java:${protobufVersion}"
+    compile "com.google.protobuf:protobuf-java-util:${protobufVersion}"
 
     testCompile 'junit:junit:4.12'
 }

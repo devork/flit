@@ -1,4 +1,4 @@
-package com.flit.protoc.gen.server.undertow;
+package com.flit.protoc.gen.server.spring;
 
 import com.flit.protoc.Plugin;
 import com.flit.protoc.gen.BaseGeneratorTest;
@@ -17,23 +17,23 @@ import static org.junit.Assert.*;
 public class ContextGeneratorTest extends BaseGeneratorTest {
 
   @Test public void test_GenerateWithMissingRoot() throws Exception {
-    test_Route("context.missing.undertow.json", "/twirp/com.example.context.NullService");
+    test_Route("context.missing.spring.json", "/twirp/com.example.context.NullService/SayNull");
   }
 
   @Test public void test_GenerateWithEmptyRoot() throws Exception {
-    test_Route("context.empty.undertow.json", "/twirp/com.example.context.NullService");
+    test_Route("context.empty.spring.json", "/twirp/com.example.context.NullService/SayNull");
   }
 
   @Test public void test_GenerateWithSlashOnlyRoot() throws Exception {
-    test_Route("context.slash.undertow.json", "/com.example.context.NullService");
+    test_Route("context.slash.spring.json", "/com.example.context.NullService/SayNull");
   }
 
   @Test public void test_GenerateWithSlashRoot() throws Exception {
-    test_Route("context.root.undertow.json", "/root/com.example.context.NullService");
+    test_Route("context.root.spring.json", "/root/com.example.context.NullService/SayNull");
   }
 
   @Test public void test_GenerateWithNameRoot() throws Exception {
-    test_Route("context.name.undertow.json", "/fibble/com.example.context.NullService");
+    test_Route("context.name.spring.json", "/fibble/com.example.context.NullService/SayNull");
   }
 
   private void test_Route(String file, String route) throws Exception {
@@ -50,11 +50,11 @@ public class ContextGeneratorTest extends BaseGeneratorTest {
       .collect(Collectors.toMap(PluginProtos.CodeGeneratorResponse.File::getName, Function.identity()));
 
     assertTrue(files.containsKey("com/example/context/rpc/RpcNullService.java"));
-    assertTrue(files.containsKey("com/example/context/rpc/RpcNullServiceHandler.java"));
+    assertTrue(files.containsKey("com/example/context/rpc/RpcNullServiceController.java"));
 
-    assertTrue(files.get("com/example/context/rpc/RpcNullServiceHandler.java")
+    assertTrue(files.get("com/example/context/rpc/RpcNullServiceController.java")
       .getContent()
-      .contains(String.format("public static final String ROUTE = \"%s\";", route)));
+      .contains(String.format("@PostMapping(\"%s\")", route)));
   }
 
 }

@@ -1,14 +1,11 @@
 package com.flit.runtime;
 
-import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Flit exception which can be thrown by implementations and translated to the Twirp error response.
  */
-@Getter
 public class FlitException extends RuntimeException {
 
     private ErrorCode errorCode;
@@ -22,6 +19,14 @@ public class FlitException extends RuntimeException {
 
     public boolean hasMeta() {
         return meta != null && !meta.isEmpty();
+    }
+
+    public ErrorCode getErrorCode() {
+        return this.errorCode;
+    }
+
+    public Map<String, Object> getMeta() {
+        return this.meta;
     }
 
     public static Builder builder() {

@@ -2,137 +2,87 @@ package com.flit.protoc.gen.server.spring;
 
 import com.flit.protoc.gen.server.BaseGenerator;
 import com.flit.protoc.gen.server.TypeMapper;
+import com.flit.protoc.gen.server.Types;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
+import com.squareup.javapoet.*;
 
+import javax.lang.model.element.Modifier;
 import java.util.Collections;
 import java.util.List;
 
 class RpcGenerator extends BaseGenerator {
 
-    private final String filename;
-    private final String context;
+  public static final ClassName RestController = ClassName.bestGuess("org.springframework.web.bind.annotation.RestController");
+  public static final ClassName Autowired = ClassName.bestGuess("org.springframework.beans.factory.annotation.Autowired");
+  public static final ClassName PostMapping = ClassName.bestGuess("org.springframework.web.bind.annotation.PostMapping");
+  public static final ClassName HttpServletRequest = ClassName.bestGuess("javax.servlet.http.HttpServletRequest");
+  public static final ClassName HttpServletResponse = ClassName.bestGuess("javax.servlet.http.HttpServletResponse");
 
-    RpcGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto service, String context, TypeMapper mapper) {
-        super(proto, service, mapper);
-        this.filename = javaPackage.replace(".", "/") + "/Rpc" + this.service.getName() + "Controller.java";
+  private final String context;
+  private final TypeSpec.Builder rpcController;
 
-        if (context == null) {
-            this.context = "/twirp";
-        } else {
-            context = context.trim();
-            if (context.equals("")) {
-                // empty route - i.e. top level "/"
-                this.context = context;
-            } else if (context.startsWith("/")) {
-                this.context = context;
-            } else {
-                this.context = "/" + context;
-            }
-        }
-    }
+  RpcGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto service, String context, TypeMapper mapper) {
+    super(proto, service, mapper);
+    this.context = getContext(context);
+    rpcController = TypeSpec.classBuilder(getControllerName()).addModifiers(Modifier.PUBLIC).addAnnotation(RestController);
+    addInstanceFields();
+    service.getMethodList().forEach(this::addHandleMethod);
+  }
 
-    void writeImports() {
-        // add imports
-        b.wn("import com.google.protobuf.util.JsonFormat;");
-        b.n();
-        b.wn("import org.springframework.beans.factory.annotation.Autowired;");
-        b.wn("import org.springframework.web.bind.annotation.PostMapping;");
-        b.wn("import org.springframework.web.bind.annotation.RestController;");
-        b.n();
-        b.wn("import javax.servlet.http.HttpServletRequest;");
-        b.wn("import javax.servlet.http.HttpServletResponse;");
-        b.wn("import java.io.InputStreamReader;");
-        b.wn("import java.nio.charset.Charset;");
-        b.n();
-    }
+  private void addInstanceFields() {
+    rpcController.addField(FieldSpec.builder(getServiceInterface(), "service").addAnnotation(Autowired).addModifiers(Modifier.PRIVATE).build());
+  }
 
-    void open() {
-        b.wn("@RestController");
-        b.wn("public class Rpc", service.getName(), "Controller {");
-        b.n();
+  private void addHandleMethod(DescriptorProtos.MethodDescriptorProto m) {
+    ClassName inputType = mapper.get(m.getInputType());
+    ClassName outputType = mapper.get(m.getOutputType());
+    String route = context + "/" + (proto.hasPackage() ? proto.getPackage() + "." : "") + service.getName() + "/" + m.getName();
+    rpcController.addMethod(MethodSpec.methodBuilder("handle" + m.getName())
+      .addModifiers(Modifier.PUBLIC)
+      .addParameter(HttpServletRequest, "request")
+      .addParameter(HttpServletResponse, "response")
+      .addException(Types.Exception)
+      // the spring mapping
+      .addAnnotation(AnnotationSpec.builder(PostMapping).addMember("value", "$S", route).build())
+      .addStatement("boolean json = false")
+      .addStatement("final $T data", inputType)
+      .beginControlFlow("if (request.getContentType().equals($S))", "application/protobuf")
+      .addStatement("data = $T.parseFrom(request.getInputStream())", inputType)
+      .nextControlFlow("else if (request.getContentType().startsWith($S))", "application/json")
+      .addStatement("json = true")
+      .addStatement("$T.Builder builder = $T.newBuilder()", inputType, inputType)
+      .addStatement("$T.parser().merge(new $T(request.getInputStream(), $T.UTF_8), builder)",
+        Types.JsonFormat,
+        Types.InputStreamReader,
+        Types.StandardCharsets)
+      .addStatement("data = builder.build()")
+      .nextControlFlow("else")
+      .addStatement("response.setStatus(415)")
+      .addStatement("return")
+      .endControlFlow()
+      // route to the service
+      .addStatement("$T retval = service.handle$L(data)", outputType, m.getName())
+      .addStatement("response.setStatus(200)")
+      // send the response
+      .beginControlFlow("if (json)")
+      .addStatement("response.setContentType($S)", "application/json;charset=UTF-8")
+      .addStatement("response.getOutputStream().write($T.printer().omittingInsignificantWhitespace().print(retval).getBytes($T.UTF_8))",
+        Types.JsonFormat,
+        Types.StandardCharsets)
+      .nextControlFlow("else")
+      .addStatement("response.setContentType($S)", "application/protobuf")
+      .addStatement("retval.writeTo(response.getOutputStream())")
+      .endControlFlow()
+      .build());
 
-        // add the service handler
-        b.inc();
-        b.iwn("@Autowired");
-        b.iwn("private Rpc", service.getName(), " service;");
-        b.n();
-    }
+  }
 
-    void close() {
-        b.dec();
-        b.wn("}");
-    }
+  private ClassName getControllerName() {
+    return ClassName.get(javaPackage, "Rpc" + service.getName() + "Controller");
+  }
 
-    void writeService(DescriptorProtos.ServiceDescriptorProto s) {
-
-        // for each service:
-        //  1) Create a new interface for clients to implement logic
-        //  2) Create a handler implementation to receive the data
-
-
-        s.getMethodList().forEach(m -> {
-
-            String route = context + "/" + (proto.hasPackage() ? proto.getPackage() + "." : "") + s.getName() + "/" + m.getName();
-
-            // the spring mapping
-            b.iwn("@PostMapping(value=\"", route, "\")");
-
-            // the method name
-            b.iwn("public void handle", m.getName(), "(HttpServletRequest request, HttpServletResponse response) throws Exception {");
-            b.inc();
-
-            // bind the data
-            b.iwn("boolean json = false;");
-            b.iwn(clazz, ".", basename(m.getInputType()), " data;");
-            b.iwn("if (request.getContentType().equals(\"application/protobuf\")) {");
-            b.inc();
-            b.iwn("data = ", clazz, ".", basename(m.getInputType()), ".parseFrom(request.getInputStream());");
-            b.dec();
-            b.iwn("} else if (request.getContentType().startsWith(\"application/json\")) {");
-            b.inc();
-            b.iwn("json = true;");
-            b.iwn(clazz, ".", basename(m.getInputType()), ".Builder builder = ", clazz, ".", basename(m.getInputType()), ".newBuilder();");
-            b.iwn("JsonFormat.parser().merge(new InputStreamReader(request.getInputStream(), Charset.forName(\"UTF-8\")), builder);");
-            b.iwn("data = builder.build();");
-            b.dec();
-            b.iwn("} else {");
-            b.inc();
-            b.iwn("response.setStatus(415);");
-            b.iwn("return;");
-            b.dec();
-            b.iwn("}");
-            b.n();
-
-            // route to the service
-            b.iwn(clazz, ".", basename(m.getOutputType()), " retval = ", "service.handle", m.getName(), "(data);");
-            b.iwn("response.setStatus(200);");
-
-            b.iwn("if (json) {");
-            b.inc();
-            b.iwn("response.setContentType(\"application/json;charset=UTF-8\");");
-            b.iwn("response.getOutputStream().write(JsonFormat.printer().omittingInsignificantWhitespace().print(retval).getBytes(Charset.forName(\"UTF-8\")));");
-            b.iwn("return;");
-            b.dec();
-            b.iwn("}");
-            b.n();
-            b.iwn("response.setContentType(\"application/protobuf\");");
-            b.iwn("retval.writeTo(response.getOutputStream());");
-            b.dec();
-
-            b.iwn("}");
-            b.n();
-        });
-
-
-    }
-
-    @Override
-    public List<PluginProtos.CodeGeneratorResponse.File> getFiles() {
-        PluginProtos.CodeGeneratorResponse.File.Builder builder = PluginProtos.CodeGeneratorResponse.File.newBuilder();
-        builder.setName(filename);
-        builder.setContent(b.toString());
-
-        return Collections.singletonList(builder.build());
-    }
+  @Override public List<PluginProtos.CodeGeneratorResponse.File> getFiles() {
+    return Collections.singletonList(toFile(getControllerName(), rpcController.build()));
+  }
 }

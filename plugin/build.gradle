@@ -16,8 +16,8 @@ group 'com.flit'
 
 sourceCompatibility = 1.8
 
-if (!(project.hasProperty("release") && project.properties['release'] == "true")) {
-    project.version += ".snapshot." + project.scm.tstamp
+configurations {
+    zip
 }
 
 shadowJar {
@@ -39,17 +39,18 @@ dependencies {
     compile 'commons-io:commons-io:2.5'
     compile 'com.google.protobuf:protobuf-java:3.5.1'
     compile 'com.google.protobuf:protobuf-java-util:3.5.1'
+    compile 'com.squareup:javapoet:1.11.1'
 
     compileOnly('org.projectlombok:lombok:+')
 
     testCompile 'com.github.javaparser:javaparser-core:3.6.9'
     testCompile 'junit:junit:4.12'
+    testCompile 'com.approvaltests:approvaltests:2.0.0'
 }
 
-shadowJar.dependsOn build
+shadowJar.dependsOn compileJava
 
 task pack(type: Zip) {
-
     archiveName = "flit-plugin.zip"
     destinationDir = file("${buildDir}/package")
 
@@ -63,3 +64,8 @@ task pack(type: Zip) {
 }
 
 pack.dependsOn shadowJar
+
+artifacts {
+  zip pack
+}
+

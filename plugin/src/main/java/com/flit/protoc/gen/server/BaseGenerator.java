@@ -1,56 +1,58 @@
 package com.flit.protoc.gen.server;
 
-import com.flit.protoc.gen.Buffer;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.TypeSpec;
 
-import java.time.Instant;
 import java.util.List;
-
-import static com.flit.protoc.gen.server.TypeMapper.getClassname;
 
 public abstract class BaseGenerator {
 
-    protected final Buffer b = new Buffer();
-    protected final DescriptorProtos.ServiceDescriptorProto service;
-    protected final String javaPackage;
-    protected final String clazz;
-    protected final TypeMapper mapper;
+  protected final DescriptorProtos.FileDescriptorProto proto;
+  protected final DescriptorProtos.ServiceDescriptorProto service;
+  protected final String javaPackage;
+  protected final TypeMapper mapper;
 
-    protected DescriptorProtos.FileDescriptorProto proto;
+  protected BaseGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto s, TypeMapper mapper) {
+    this.proto = proto;
+    this.service = s;
+    this.javaPackage = proto.getOptions().getJavaPackage();
+    this.mapper = mapper;
+  }
 
-    protected BaseGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto s, TypeMapper mapper) {
-        this.clazz = getClassname(proto);
-        this.javaPackage = proto.getOptions().getJavaPackage();
-        this.proto = proto;
-        this.service = s;
-        this.mapper = mapper;
+  public abstract List<PluginProtos.CodeGeneratorResponse.File> getFiles();
+
+  protected String getFileName(String className) {
+    return javaPackage.replace(".", "/") + "/" + className + ".java";
+  }
+
+  /** Returns the {@code Rpc${Service}} synchronous interface. */
+  protected ClassName getServiceInterface() {
+    return ClassName.get(javaPackage, "Rpc" + service.getName());
+  }
+
+  protected static String getContext(String context) {
+    if (context == null) {
+      return "/twirp";
+    } else {
+      context = context.trim();
+      if (context.equals("") || context.equals("/")) {
+        return ""; // empty route - i.e. top level "/"
+      } else if (context.startsWith("/")) {
+        return context;
+      } else {
+        return "/" + context;
+      }
     }
+  }
 
-    public void writeProlog() {
-        b.wn("// -------------------------------------------------------------");
-        b.wn("// Generated code from flit: Please do not modify");
-        b.wn("// Created: ", Instant.now().toString());
-        b.wn("// -------------------------------------------------------------");
-        b.wn("\n");
-    }
-
-    public void writePackage() {
-        b.wn("package ", javaPackage, ";");
-        b.n();
-    }
-
-    public abstract List<PluginProtos.CodeGeneratorResponse.File> getFiles();
-
-    public static String basename(String name) {
-        return basename(name, "\\.");
-    }
-
-    public static String basename(String name, String sep) {
-        String[] parts = name.split(sep);
-
-        return parts[parts.length - 1];
-    }
-
-
+  /** Assumes name+type is a top-level type and turns it into the protobuf output file type. */
+  protected static PluginProtos.CodeGeneratorResponse.File toFile(ClassName name, TypeSpec type) {
+    return PluginProtos.CodeGeneratorResponse.File.newBuilder()
+      .setName(name.toString().replace(".", "/") + ".java")
+      .setContent(JavaFile.builder(name.packageName(), type).build().toString())
+      .build();
+  }
 }
