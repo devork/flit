@@ -1,5 +1,6 @@
 package com.flit.protoc.gen.server;
 
+import com.flit.protoc.gen.BaseGenerator;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import com.squareup.javapoet.ClassName;

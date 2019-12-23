@@ -1,6 +1,7 @@
 package com.flit.protoc.gen.server;
 
 import com.flit.protoc.Parameter;
+import com.flit.protoc.gen.BaseGenerator;
 import com.flit.protoc.gen.Generator;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;

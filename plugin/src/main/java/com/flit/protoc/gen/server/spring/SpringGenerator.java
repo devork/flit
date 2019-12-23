@@ -1,6 +1,6 @@
 package com.flit.protoc.gen.server.spring;
 
-import com.flit.protoc.gen.server.BaseGenerator;
+import com.flit.protoc.gen.BaseGenerator;
 import com.flit.protoc.gen.server.BaseServerGenerator;
 import com.flit.protoc.gen.server.TypeMapper;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;

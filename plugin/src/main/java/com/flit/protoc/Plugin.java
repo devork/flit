@@ -53,6 +53,13 @@ public class Plugin {
           default:
             throw new GeneratorException("Unknown server type: " + params.get(PARAM_TYPE).getValue());
         }
+      case "client":
+        switch(params.get(PARAM_TYPE).getValue()) {
+          case "okhttp":
+            return new OkHttpGenerator();
+          default:
+            throw new GeneratorException("Unknown client type: " + params.get(PARAM_TYPE).getValue());
+        }
       default:
         throw new GeneratorException("Unknown target type: " + params.get(PARAM_TARGET).getValue());
     }
