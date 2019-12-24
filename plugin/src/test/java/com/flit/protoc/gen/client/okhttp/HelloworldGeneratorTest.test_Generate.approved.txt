@@ -8,6 +8,9 @@ public interface RpcHelloWorld {
 
 [1] = package com.example.helloworld;
 
+import com.flit.runtime.ErrorCode;
+import com.flit.runtime.FlitException;
+import java.io.InputStream;
 import java.lang.Exception;
 import java.lang.String;
 import java.util.Map;

@@ -8,10 +8,13 @@ import com.google.protobuf.compiler.PluginProtos;
 import com.squareup.javapoet.*;
 import okhttp3.*;
 
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.flit.protoc.gen.server.Types.ErrorCode;
+import static com.flit.protoc.gen.server.Types.FlitException;
 import static javax.lang.model.element.Modifier.*;
 
 public class RpcGenerator extends BaseGenerator {
@@ -78,11 +81,11 @@ public class RpcGenerator extends BaseGenerator {
           .addStatement("builder.post(requestBody)")
           .addStatement("$T request = builder.build()", Request.class)
           .addStatement("String responseString")
-          .addStatement("InputStream responseStream")
+          .addStatement("$T responseStream", InputStream.class)
           .beginControlFlow("try($T response = client.newCall(request).execute())", Response.class)
           .beginControlFlow("if(response.code() != 200)")
           .addStatement("responseString = response.body().toString()")
-          .addStatement("throw FlitException.builder().withErrorCode(ErrorCode.INTERNAL).withMeta(\"message\", responseString).withMessage(\"RPC error\").build()")
+          .addStatement("throw $T.builder().withErrorCode($T.INTERNAL).withMeta(\"message\", responseString).withMessage(\"RPC error\").build()", FlitException, ErrorCode)
           .nextControlFlow("else")
           .addStatement("responseStream = response.body().byteStream()")
           .addStatement("return $T.parseFrom(responseStream)", outputType)
