@@ -15,11 +15,6 @@
 # The quiet flag is required otherwise the tooling will dump output to stdout which will break the
 # plugin output and generation will fail.
 # -----------------------------------------------------------------------------
-
-# Running locally on osx:
-# DIR=$(dirname $(greadlink -f "$0"))
-
-# Running on *nix:
 DIR=$(dirname $(readlink -f "$0"))
 
 JAR=$(ls -c ${DIR}/plugin-*-all.jar | head -1)

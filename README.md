@@ -38,6 +38,14 @@ To build the various components, run the following:
     git clone git@github.com:devork/flit.git
     cd flit
     ./gradlew clean build pack
+    
+### Building with docker
+
+```bash
+    $ docker-compose up -d
+    $ docker-compose run gen
+    gen > ./gradlew clean build pack 
+```
 
 ### Installation
 

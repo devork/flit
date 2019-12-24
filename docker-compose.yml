@@ -1,0 +1,8 @@
+version: "3.4"
+
+services:
+  gen:
+    build: .
+    volumes:
+      - .:/app
+    command: sleep 10000
