@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static com.flit.protoc.Parameter.PARAM_CONTEXT;
 
-public class BaseClientGenerator implements Generator {
+public abstract class BaseClientGenerator implements Generator {
     @Override public List<PluginProtos.CodeGeneratorResponse.File> generate(PluginProtos.CodeGeneratorRequest request, Map<String, Parameter> params) {
         List<PluginProtos.CodeGeneratorResponse.File> files = new ArrayList<>();
         String context = getContext(params);
