@@ -6,8 +6,7 @@ import com.flit.protoc.gen.server.Types;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import com.squareup.javapoet.*;
-import okhttp3.Headers;
-import okhttp3.OkHttpClient;
+import okhttp3.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -69,18 +68,18 @@ public class RpcGenerator extends BaseGenerator {
           .addParameter(inputType, "in")
           .returns(outputType)
           .addException(Exception.class)
-          .addStatement("RequestBody requestBody = RequestBody.create(in.toByteArray(), MediaType.get(\"application/protobuf\"));")
-          .addStatement("Request.Builder builder = new Request.Builder()")
+          .addStatement("$T requestBody = $T.create(in.toByteArray(), $T.get(\"application/protobuf\"))", RequestBody.class, RequestBody.class, MediaType.class)
+          .addStatement("$T builder = new $T()", Request.Builder.class, Request.Builder.class)
           .addStatement("builder.addHeader(\"Accept\", \"application/protobuf\")")
           .addStatement("builder.addHeader(\"Content-Type\", \"application/protobuf\")")
           .addStatement("builder.addHeader(\"Flit-Version\", \"v1.1.0\")")
           .addStatement("builder.headers(headers)")
-          .addStatement("builder.url(HttpUrl.parse(baseAddress + SERVICE_PATH_PREFIX + \"$S\")", m.getName())
+          .addStatement("builder.url($T.parse(baseAddress + SERVICE_PATH_PREFIX + $S))", HttpUrl.class, m.getName())
           .addStatement("builder.post(requestBody)")
-          .addStatement("Request request = builder.build()")
+          .addStatement("$T request = builder.build()", Request.class)
           .addStatement("String responseString")
           .addStatement("InputStream responseStream")
-          .beginControlFlow("try(Response response = client.newCall(request).execute())")
+          .beginControlFlow("try($T response = client.newCall(request).execute())", Response.class)
           .beginControlFlow("if(response.code() != 200)")
           .addStatement("responseString = response.body().toString()")
           .addStatement("throw FlitException.builder().withErrorCode(ErrorCode.INTERNAL).withMeta(\"message\", responseString).withMessage(\"RPC error\").build()")
