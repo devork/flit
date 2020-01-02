@@ -3,8 +3,7 @@ package com.flit.protoc.gen.client;
 import com.flit.protoc.Parameter;
 import com.flit.protoc.gen.BaseGenerator;
 import com.flit.protoc.gen.Generator;
-import com.flit.protoc.gen.server.ServiceGenerator;
-import com.flit.protoc.gen.server.TypeMapper;
+import com.flit.protoc.gen.TypeMapper;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 
@@ -21,7 +20,7 @@ public abstract class BaseClientGenerator implements Generator {
         TypeMapper mapper = new TypeMapper(request.getProtoFileList());
         request.getProtoFileList().forEach(proto -> {
             proto.getServiceList().forEach(s -> {
-                files.addAll(new ServiceGenerator(proto, s, mapper).getFiles());
+                files.addAll(new ClientGenerator(proto, s, mapper).getFiles());
                 files.addAll(getRpcGenerator(proto, s, context, mapper).getFiles());
             });
         });

@@ -2,7 +2,7 @@ package com.flit.protoc.gen.client.okhttp;
 
 import com.flit.protoc.gen.BaseGenerator;
 import com.flit.protoc.gen.client.BaseClientGenerator;
-import com.flit.protoc.gen.server.TypeMapper;
+import com.flit.protoc.gen.TypeMapper;
 import com.google.protobuf.DescriptorProtos;
 
 public class OkHttpGenerator extends BaseClientGenerator {
