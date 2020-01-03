@@ -25,7 +25,7 @@ public class StatusGeneratorTest extends BaseGeneratorTest {
     assertEquals(2, response.getFileCount());
 
     assertEquals(response.getFile(0).getName(), "com/example/helloworld/RpcStatus.java");
-    assertEquals(response.getFile(1).getName(), "com/example/helloworld/RpcStatusClient.java");
+    assertEquals(response.getFile(1).getName(), "com/example/helloworld/RpcStatusDispatcher.java");
 
     Approvals.verifyAll("", response.getFileList().stream().map(f -> f.getContent()).collect(toList()));
     response.getFileList().forEach(f -> assertParses(f));

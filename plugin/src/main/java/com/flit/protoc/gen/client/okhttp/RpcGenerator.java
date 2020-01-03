@@ -27,6 +27,7 @@ public class RpcGenerator extends BaseGenerator {
         addStaticFields();
         addInstanceFields();
         addConstructor();
+        addBeforeRequestFunctionSetter();
         service.getMethodList().forEach(this::writeDispatchMethod);
     }
 
@@ -34,9 +35,15 @@ public class RpcGenerator extends BaseGenerator {
         return ClassName.get(javaPackage, "Rpc" + service.getName() + "Dispatcher");
     }
 
-    // TODO
-    // add setBeforeRequest
-    // re-do dispatch method to call function
+    private void addBeforeRequestFunctionSetter() {
+        rpcDispatcher.addMethod(
+                MethodSpec.methodBuilder("setBeforeRequest")
+                .addModifiers(PUBLIC)
+                .addParameter(BeforeRequestFunction, "beforeRequest")
+                .addStatement("this.beforeRequest = beforeRequest")
+                .build()
+        );
+    }
 
     private void addRequestPayload() {
         // Add inner class for request payload
@@ -88,13 +95,16 @@ public class RpcGenerator extends BaseGenerator {
           .addParameter(inputType, "in")
           .returns(outputType)
           .addException(Exception)
+          .addStatement("$T url = $T.parse(baseAddress + SERVICE_PATH_PREFIX + $S)", HttpUrl, HttpUrl, m.getName())
           .addStatement("$T requestBody = $T.create(in.toByteArray(), $T.get(\"application/protobuf\"))", RequestBody, RequestBody, MediaType)
           .addStatement("$T builder = new $T()", RequestBuilder, RequestBuilder)
+          .beginControlFlow("if(beforeRequest != null)")
+          .addStatement("builder = beforeRequest.apply(new BeforeRequestPayload(builder, url))")
+          .endControlFlow()
           .addStatement("builder.addHeader(\"Accept\", \"application/protobuf\")")
           .addStatement("builder.addHeader(\"Content-Type\", \"application/protobuf\")")
           .addStatement("builder.addHeader(\"Flit-Version\", \"v1.1.0\")")
-          .addStatement("builder.headers(headers)")
-          .addStatement("builder.url($T.parse(baseAddress + SERVICE_PATH_PREFIX + $S))", HttpUrl, m.getName())
+          .addStatement("builder.url(url)")
           .addStatement("builder.post(requestBody)")
           .addStatement("$T request = builder.build()", Request)
           .addStatement("String responseString")

@@ -1,7 +1,7 @@
 [0] = package com.example.helloworld;
 
 public interface RpcStatus {
-  StatusOuterClass.StatusResponse handleGetStatus(Core.Empty in);
+  StatusOuterClass.StatusResponse dispatchGetStatus(Core.Empty in);
 }
 
 [1] = package com.example.helloworld;
@@ -11,8 +11,7 @@ import com.flit.runtime.FlitException;
 import java.io.InputStream;
 import java.lang.Exception;
 import java.lang.String;
-import java.util.Map;
-import okhttp3.Headers;
+import java.util.function.Function;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -20,29 +19,35 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class RpcStatusClient {
+public class RpcStatusDispatcher {
   public static final String SERVICE_PATH_PREFIX = "/twirp/com.example.helloworld.Status";
 
   private final String baseAddress;
 
-  OkHttpClient client;
+  private OkHttpClient client;
 
-  Headers headers;
+  Function<BeforeRequestPayload, Request.Builder> beforeRequest;
 
-  public RpcStatusClient(String address, OkHttpClient client, Map headers) {
+  public RpcStatusDispatcher(String address, OkHttpClient client) {
     this.baseAddress = address;
     this.client = client;
-    this.headers = Headers.of(headers);
   }
 
-  private StatusOuterClass.StatusResponse dispatchGetStatus(Core.Empty in) throws Exception {
+  public void setBeforeRequest(Function<BeforeRequestPayload, Request.Builder> beforeRequest) {
+    this.beforeRequest = beforeRequest;
+  }
+
+  public StatusOuterClass.StatusResponse dispatchGetStatus(Core.Empty in) throws Exception {
+    HttpUrl url = HttpUrl.parse(baseAddress + SERVICE_PATH_PREFIX + "GetStatus");
     RequestBody requestBody = RequestBody.create(in.toByteArray(), MediaType.get("application/protobuf"));
     Request.Builder builder = new Request.Builder();
+    if(beforeRequest != null) {
+      builder = beforeRequest.apply(new BeforeRequestPayload(builder, url));
+    }
     builder.addHeader("Accept", "application/protobuf");
     builder.addHeader("Content-Type", "application/protobuf");
     builder.addHeader("Flit-Version", "v1.1.0");
-    builder.headers(headers);
-    builder.url(HttpUrl.parse(baseAddress + SERVICE_PATH_PREFIX + "GetStatus"));
+    builder.url(url);
     builder.post(requestBody);
     Request request = builder.build();
     String responseString;
@@ -55,6 +60,17 @@ public class RpcStatusClient {
         responseStream = response.body().byteStream();
         return StatusOuterClass.StatusResponse.parseFrom(responseStream);
       }
+    }
+  }
+
+  public class BeforeRequestPayload {
+    public Request.Builder builder;
+
+    public HttpUrl url;
+
+    public BeforeRequestPayload(Request.Builder builder, HttpUrl url) {
+      this.builder = builder;
+      this.url = url;
     }
   }
 }

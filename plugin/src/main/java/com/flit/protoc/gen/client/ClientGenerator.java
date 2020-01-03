@@ -17,7 +17,7 @@ public class ClientGenerator extends BaseGenerator {
 
     public ClientGenerator(DescriptorProtos.FileDescriptorProto proto, DescriptorProtos.ServiceDescriptorProto s, TypeMapper mapper) {
         super(proto, s, mapper);
-        rpcInterface = TypeSpec.interfaceBuilder(ClassName.get(javaPackage, service.getName()) + "Client");
+        rpcInterface = TypeSpec.interfaceBuilder(ClassName.get(javaPackage, "Rpc" + service.getName()));
         rpcInterface.addModifiers(Modifier.PUBLIC);
         service.getMethodList().forEach(this::addDispatchMethod);
     }
