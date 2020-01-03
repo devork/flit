@@ -72,7 +72,7 @@ The flit plugin accepts the following plugin parameters:
 
 | Name          | Required  | Type                          | Description                                               |
 |:--------------|:---------:|:------------------------------|:----------------------------------------------------------|
-| `target`      | Y         | `enum[server]`                | The type of target to generate e.g. server, client etc    |
+| `target`      | Y         | `enum[server,client]`                | The type of target to generate e.g. server, client etc    |
 | `type`        | Y         | `enum[spring,undertow,boot]`  | Type of target to generate                                |
 | `context`     | N         | `string`                      | Base context for routing, default is `/twirp`             |
 

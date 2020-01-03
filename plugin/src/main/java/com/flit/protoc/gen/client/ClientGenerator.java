@@ -27,6 +27,7 @@ public class ClientGenerator extends BaseGenerator {
                 .addParameter(mapper.get(m.getInputType()), "in")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(mapper.get(m.getOutputType()))
+                .addException(Exception.class)
                 .build());
     }
 

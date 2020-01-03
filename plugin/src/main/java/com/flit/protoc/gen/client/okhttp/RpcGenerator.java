@@ -37,11 +37,11 @@ public class RpcGenerator extends BaseGenerator {
 
     private void addBeforeRequestFunctionSetter() {
         rpcDispatcher.addMethod(
-                MethodSpec.methodBuilder("setBeforeRequest")
-                .addModifiers(PUBLIC)
-                .addParameter(BeforeRequestFunction, "beforeRequest")
-                .addStatement("this.beforeRequest = beforeRequest")
-                .build()
+        MethodSpec.methodBuilder("setBeforeRequest")
+        .addModifiers(PUBLIC)
+        .addParameter(BeforeRequestFunction, "beforeRequest")
+        .addStatement("this.beforeRequest = beforeRequest")
+        .build()
         );
     }
 

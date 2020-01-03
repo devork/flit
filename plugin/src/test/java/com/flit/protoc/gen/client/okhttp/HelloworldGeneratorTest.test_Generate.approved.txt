@@ -1,9 +1,11 @@
 [0] = package com.example.helloworld;
 
-public interface RpcHelloWorld {
-  Helloworld.HelloResp dispatchHello(Helloworld.HelloReq in);
+import java.lang.Exception;
 
-  Helloworld.HelloResp dispatchHelloAgain(Helloworld.HelloReq in);
+public interface RpcHelloWorld {
+  Helloworld.HelloResp dispatchHello(Helloworld.HelloReq in) throws Exception;
+
+  Helloworld.HelloResp dispatchHelloAgain(Helloworld.HelloReq in) throws Exception;
 }
 
 [1] = package com.example.helloworld;

@@ -1,7 +1,9 @@
 [0] = package com.example.helloworld;
 
+import java.lang.Exception;
+
 public interface RpcStatus {
-  StatusOuterClass.StatusResponse dispatchGetStatus(Core.Empty in);
+  StatusOuterClass.StatusResponse dispatchGetStatus(Core.Empty in) throws Exception;
 }
 
 [1] = package com.example.helloworld;
