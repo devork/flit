@@ -66,7 +66,7 @@ public class RpcGenerator extends BaseGenerator {
         // Add service path prix
         rpcDispatcher.addField(FieldSpec.builder(String, "SERVICE_PATH_PREFIX")
         .addModifiers(PUBLIC, STATIC, FINAL)
-        .initializer("\"$L/$L$L\"", context, proto.hasPackage() ? proto.getPackage() + "." : "", service.getName())
+        .initializer("\"$L/$L$L/\"", context, proto.hasPackage() ? proto.getPackage() + "." : "", service.getName())
         .build());
     }
 
@@ -111,7 +111,7 @@ public class RpcGenerator extends BaseGenerator {
           .addStatement("$T responseStream", InputStream)
           .beginControlFlow("try($T response = client.newCall(request).execute())", Response)
           .beginControlFlow("if(response.code() != 200)")
-          .addStatement("responseString = response.body().toString()")
+          .addStatement("responseString = response.body().string()")
           .addStatement("throw $T.builder().withErrorCode($T.INTERNAL).withMeta(\"message\", responseString).withMessage(\"RPC error\").build()", FlitException, ErrorCode)
           .nextControlFlow("else")
           .addStatement("responseStream = response.body().byteStream()")

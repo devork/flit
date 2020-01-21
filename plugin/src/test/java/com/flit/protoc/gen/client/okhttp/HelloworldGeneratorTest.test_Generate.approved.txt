@@ -24,7 +24,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class RpcHelloWorldDispatcher {
-  public static final String SERVICE_PATH_PREFIX = "/twirp/com.example.helloworld.HelloWorld";
+  public static final String SERVICE_PATH_PREFIX = "/twirp/com.example.helloworld.HelloWorld/";
 
   private final String baseAddress;
 
@@ -58,7 +58,7 @@ public class RpcHelloWorldDispatcher {
     InputStream responseStream;
     try(Response response = client.newCall(request).execute()) {
       if(response.code() != 200) {
-        responseString = response.body().toString();
+        responseString = response.body().string();
         throw FlitException.builder().withErrorCode(ErrorCode.INTERNAL).withMeta("message", responseString).withMessage("RPC error").build();
       } else {
         responseStream = response.body().byteStream();
@@ -84,7 +84,7 @@ public class RpcHelloWorldDispatcher {
     InputStream responseStream;
     try(Response response = client.newCall(request).execute()) {
       if(response.code() != 200) {
-        responseString = response.body().toString();
+        responseString = response.body().string();
         throw FlitException.builder().withErrorCode(ErrorCode.INTERNAL).withMeta("message", responseString).withMessage("RPC error").build();
       } else {
         responseStream = response.body().byteStream();

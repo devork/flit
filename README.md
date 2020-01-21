@@ -42,7 +42,7 @@ To build the various components, run the following:
 ### Building with docker
 
 ```bash
-    $ docker-compose run gen ./gradlew clean build pack 
+    $ docker-compose run gen ./gradlew build pack 
 ```
 
 ### Installation
