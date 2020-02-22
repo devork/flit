@@ -1,4 +1,4 @@
-package com.flit.protoc.gen.server;
+package com.flit.protoc.gen;
 
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;

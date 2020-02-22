@@ -1,0 +1,107 @@
+[0] = package com.example.helloworld;
+
+import java.lang.Exception;
+
+public interface RpcHelloWorld {
+  Helloworld.HelloResp dispatchHello(Helloworld.HelloReq in) throws Exception;
+
+  Helloworld.HelloResp dispatchHelloAgain(Helloworld.HelloReq in) throws Exception;
+}
+
+[1] = package com.example.helloworld;
+
+import com.flit.runtime.ErrorCode;
+import com.flit.runtime.FlitException;
+import java.io.InputStream;
+import java.lang.Exception;
+import java.lang.String;
+import java.util.function.Function;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+public class RpcHelloWorldDispatcher {
+  public static final String SERVICE_PATH_PREFIX = "/twirp/com.example.helloworld.HelloWorld/";
+
+  private final String baseAddress;
+
+  private OkHttpClient client;
+
+  Function<BeforeRequestPayload, Request.Builder> beforeRequest;
+
+  public RpcHelloWorldDispatcher(String address, OkHttpClient client) {
+    this.baseAddress = address;
+    this.client = client;
+  }
+
+  public void setBeforeRequest(Function<BeforeRequestPayload, Request.Builder> beforeRequest) {
+    this.beforeRequest = beforeRequest;
+  }
+
+  public Helloworld.HelloResp dispatchHello(Helloworld.HelloReq in) throws Exception {
+    HttpUrl url = HttpUrl.parse(baseAddress + SERVICE_PATH_PREFIX + "Hello");
+    RequestBody requestBody = RequestBody.create(in.toByteArray(), MediaType.get("application/protobuf"));
+    Request.Builder builder = new Request.Builder();
+    if(beforeRequest != null) {
+      builder = beforeRequest.apply(new BeforeRequestPayload(builder, url));
+    }
+    builder.addHeader("Accept", "application/protobuf");
+    builder.addHeader("Content-Type", "application/protobuf");
+    builder.addHeader("Flit-Version", "v1.1.0");
+    builder.url(url);
+    builder.post(requestBody);
+    Request request = builder.build();
+    String responseString;
+    InputStream responseStream;
+    try(Response response = client.newCall(request).execute()) {
+      if(response.code() != 200) {
+        responseString = response.body().string();
+        throw FlitException.builder().withErrorCode(ErrorCode.INTERNAL).withMeta("message", responseString).withMessage("RPC error").build();
+      } else {
+        responseStream = response.body().byteStream();
+        return Helloworld.HelloResp.parseFrom(responseStream);
+      }
+    }
+  }
+
+  public Helloworld.HelloResp dispatchHelloAgain(Helloworld.HelloReq in) throws Exception {
+    HttpUrl url = HttpUrl.parse(baseAddress + SERVICE_PATH_PREFIX + "HelloAgain");
+    RequestBody requestBody = RequestBody.create(in.toByteArray(), MediaType.get("application/protobuf"));
+    Request.Builder builder = new Request.Builder();
+    if(beforeRequest != null) {
+      builder = beforeRequest.apply(new BeforeRequestPayload(builder, url));
+    }
+    builder.addHeader("Accept", "application/protobuf");
+    builder.addHeader("Content-Type", "application/protobuf");
+    builder.addHeader("Flit-Version", "v1.1.0");
+    builder.url(url);
+    builder.post(requestBody);
+    Request request = builder.build();
+    String responseString;
+    InputStream responseStream;
+    try(Response response = client.newCall(request).execute()) {
+      if(response.code() != 200) {
+        responseString = response.body().string();
+        throw FlitException.builder().withErrorCode(ErrorCode.INTERNAL).withMeta("message", responseString).withMessage("RPC error").build();
+      } else {
+        responseStream = response.body().byteStream();
+        return Helloworld.HelloResp.parseFrom(responseStream);
+      }
+    }
+  }
+
+  public class BeforeRequestPayload {
+    public Request.Builder builder;
+
+    public HttpUrl url;
+
+    public BeforeRequestPayload(Request.Builder builder, HttpUrl url) {
+      this.builder = builder;
+      this.url = url;
+    }
+  }
+}
+

@@ -2,6 +2,7 @@ package com.flit.protoc;
 
 import com.flit.protoc.gen.Generator;
 import com.flit.protoc.gen.GeneratorException;
+import com.flit.protoc.gen.client.okhttp.OkHttpGenerator;
 import com.flit.protoc.gen.server.spring.SpringGenerator;
 import com.flit.protoc.gen.server.undertow.UndertowGenerator;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
@@ -52,6 +53,13 @@ public class Plugin {
             return new UndertowGenerator();
           default:
             throw new GeneratorException("Unknown server type: " + params.get(PARAM_TYPE).getValue());
+        }
+      case "client":
+        switch(params.get(PARAM_TYPE).getValue()) {
+          case "okhttp":
+            return new OkHttpGenerator();
+          default:
+            throw new GeneratorException("Unknown client type: " + params.get(PARAM_TYPE).getValue());
         }
       default:
         throw new GeneratorException("Unknown target type: " + params.get(PARAM_TARGET).getValue());

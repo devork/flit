@@ -1,7 +1,7 @@
 package com.flit.protoc.gen.server.undertow;
 
-import com.flit.protoc.gen.server.BaseGenerator;
-import com.flit.protoc.gen.server.TypeMapper;
+import com.flit.protoc.gen.BaseGenerator;
+import com.flit.protoc.gen.TypeMapper;
 import com.flit.protoc.gen.server.Types;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
