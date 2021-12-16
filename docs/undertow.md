@@ -140,13 +140,13 @@ Following on from the haberdasher example, here's a simple implementation of the
 package com.example.demo.service;
 
 import com.example.demo.haberdasher.rpc.HaberdasherOuterClass;
-import com.example.demo.haberdasher.rpc.RpcHaberdasherService;
+import com.example.demo.haberdasher.rpc.RpcHaberdasher;
 import com.flit.runtime.ErrorCode;
 import com.flit.runtime.FlitException;
 
 import java.util.Random;
 
-public class HaberDasherService implements RpcHaberdasherService {
+public class HaberDasherService implements RpcHaberdasher {
 
     private static final String[] NAMES = new String[]{"bowler", "baseball cap", "top hat", "derby"};
     private static final String[] COLOURS = new String[]{"white", "black", "brown", "red", "blue"};
@@ -204,7 +204,7 @@ And finally, wire it all up:
 package com.example.demo;
 
 import com.example.demo.haberdasher.rpc.RpcHaberdasherHandler;
-import com.example.demo.haberdasher.service.HaberdasherService;
+import com.example.demo.service.HaberdasherService;
 import com.flit.runtime.undertow.FlitHandler;
 import io.undertow.Undertow;
 
