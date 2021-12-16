@@ -15,5 +15,7 @@ dependencies {
     compile "com.google.protobuf:protobuf-java:${protobufVersion}"
     compile "com.google.protobuf:protobuf-java-util:${protobufVersion}"
 
+    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.0.0'
+
     testCompile 'junit:junit:4.12'
 }
